@@ -27,9 +27,6 @@
       --border: rgba(90, 122, 77, 0.12);
       --shadow: 0 8px 30px rgba(90, 122, 77, 0.10);
       --shadow-strong: 0 14px 40px rgba(90, 122, 77, 0.16);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
     }
 
     html {
@@ -131,12 +128,18 @@
     }
 
     .admin-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .admin-panel {
       display: none;
       gap: 10px;
       align-items: center;
     }
 
-    .admin-controls.show {
+    .admin-panel.show {
       display: flex;
     }
 
@@ -177,6 +180,13 @@
       color: var(--green-500);
       border: 2px solid var(--green-500);
       box-shadow: none;
+    }
+
+    .cta-button.danger {
+      background: linear-gradient(135deg, #b64545 0%, #993737 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 12px rgba(182, 69, 69, 0.25);
     }
 
     .hero-section {
@@ -434,7 +444,7 @@
       background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
       color: white;
       padding: 46px;
-      border-radius: var(--radius-xl);
+      border-radius: 28px;
       margin-bottom: 60px;
       text-align: center;
       box-shadow: 0 12px 32px rgba(90, 122, 77, 0.24);
@@ -810,25 +820,6 @@
       cursor: not-allowed;
     }
 
-    .btn-secondary {
-      background: white;
-      color: #5a7a4d;
-      padding: 16px 28px;
-      border-radius: 14px;
-      font-weight: 900;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border: 2px solid #5a7a4d;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-secondary:hover {
-      background: #5a7a4d;
-      color: white;
-    }
-
     .message-box {
       margin-top: 24px;
       padding: 18px 20px;
@@ -942,6 +933,30 @@
       border-radius: 12px;
       border: 2px solid #e8ede4;
       display: block;
+    }
+
+    .history-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .history-remove-btn {
+      display: none;
+      background: #fff4f4;
+      border: 1px solid #e7bbbb;
+      color: #9a2f2f;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .history-remove-btn.show {
+      display: inline-flex;
     }
 
     .impact-section {
@@ -1076,9 +1091,13 @@
       <a class="nav-link" href="#impactSection">Our Purpose</a>
     </div>
 
-    <div class="admin-controls" id="adminControls">
-      <span class="admin-badge">Admin Mode</span>
-      <button class="cta-button secondary" id="resetTopBtn" type="button">Reset Data</button>
+    <div class="admin-controls">
+      <button class="cta-button secondary" id="adminLoginBtn" type="button">Admin</button>
+      <div class="admin-panel" id="adminPanel">
+        <span class="admin-badge">Admin Mode</span>
+        <button class="cta-button danger" id="resetTopBtn" type="button">Reset Data</button>
+        <button class="cta-button secondary" id="exitAdminBtn" type="button">Exit</button>
+      </div>
     </div>
   </nav>
 
@@ -1282,7 +1301,10 @@
     const ALPHA = 0.75;
     const BENCHMARK_COMPLETED = 4;
     const BENCHMARK_EXPECTED = 6;
-    const WEEKLY_DECAY_ASSIGNED = 1;
+
+    const WEEKLY_DECAY_ASSIGNED = 2;
+    const WEEKLY_DECAY_RATING = 12;
+    const ADMIN_PASSWORD = 'coffeeadmin';
 
     const starterMembers = [
       'Matthew McConnel', 'Ridwan Saleh', 'Henry Crabtree', 'Anya Reddy', 'Adya Kadam',
@@ -1321,6 +1343,8 @@
 
       meetingHistory = [
         {
+          id: crypto.randomUUID(),
+          type: 'system',
           html: 'System initialized. All members start with baseline engagement score. Let’s build connections!',
           timestamp: new Date().toLocaleString()
         }
@@ -1345,8 +1369,8 @@
     function getReliability(member) {
       const base = getBaseReliability(member);
       const avg = getCommunityAverageBaseReliability();
-      const relative = 0.65 + (base - avg) * 1.35;
-      return clamp(relative, 0.05, 0.99);
+      const relative = 0.65 + (base - avg) * 1.6;
+      return clamp(relative, 0.03, 0.99);
     }
 
     function getStatusLabel(reliability) {
@@ -1368,16 +1392,7 @@
     }
 
     function saveState() {
-      const serializableMembers = members.map(member => ({
-        id: member.id,
-        name: member.name,
-        rating: member.rating,
-        completedMeetings: member.completedMeetings,
-        assignedMeetings: member.assignedMeetings,
-        lastMeetingWeek: member.lastMeetingWeek || 0
-      }));
-
-      localStorage.setItem('coffeeYapMembers', JSON.stringify(serializableMembers));
+      localStorage.setItem('coffeeYapMembers', JSON.stringify(members));
       localStorage.setItem('coffeeYapHistory', JSON.stringify(meetingHistory));
       localStorage.setItem('coffeeYapWeek', String(currentWeek));
     }
@@ -1430,12 +1445,8 @@
       memberA.innerHTML = optionsHtml;
       memberB.innerHTML = optionsHtml;
 
-      if (valueA && members.some(m => String(m.id) === valueA)) {
-        memberA.value = valueA;
-      }
-      if (valueB && members.some(m => String(m.id) === valueB)) {
-        memberB.value = valueB;
-      }
+      if (valueA && members.some(m => String(m.id) === valueA)) memberA.value = valueA;
+      if (valueB && members.some(m => String(m.id) === valueB)) memberB.value = valueB;
 
       if (!memberA.value && members.length > 0) memberA.value = String(members[0].id);
       if (!memberB.value && members.length > 1) memberB.value = String(members[1].id);
@@ -1443,22 +1454,6 @@
       if (memberA.value === memberB.value && members.length > 1) {
         const fallback = members.find(m => String(m.id) !== memberA.value);
         if (fallback) memberB.value = String(fallback.id);
-      }
-
-      updateDuplicateSelectionState();
-    }
-
-    function updateDuplicateSelectionState() {
-      const memberA = document.getElementById('memberA');
-      const memberB = document.getElementById('memberB');
-
-      if (!memberA.value || !memberB.value) return;
-
-      if (memberA.value === memberB.value) {
-        const alternate = members.find(m => String(m.id) !== memberA.value);
-        if (alternate) {
-          memberB.value = String(alternate.id);
-        }
       }
     }
 
@@ -1485,9 +1480,9 @@
           <div class="stat-description">Relative to the community</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">Logged Meetings</div>
-          <div class="stat-value">${totalCompleted / 2}</div>
-          <div class="stat-description">Completed Coffee Yaps</div>
+          <div class="stat-label">Active Members</div>
+          <div class="stat-value">${activeMembers}</div>
+          <div class="stat-description">Currently keeping up</div>
         </div>
       `;
     }
@@ -1538,18 +1533,21 @@
         return;
       }
 
-      list.innerHTML = displayHistory.map(item => {
-        if (typeof item === 'string') {
-          return `<li class="history-item">${item}</li>`;
-        }
+      list.innerHTML = displayHistory.map(item => `
+        <li class="history-item">
+          ${item.timestamp ? `<span class="history-timestamp">${item.timestamp}</span>` : ''}
+          ${item.html}
+          <div class="history-actions">
+            <button class="history-remove-btn ${adminVisible ? 'show' : ''}" data-id="${item.id}" type="button">Remove</button>
+          </div>
+        </li>
+      `).join('');
 
-        return `
-          <li class="history-item">
-            ${item.timestamp ? `<span class="history-timestamp">${item.timestamp}</span>` : ''}
-            ${item.html}
-          </li>
-        `;
-      }).join('');
+      document.querySelectorAll('.history-remove-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          removeHistoryEntry(button.dataset.id);
+        });
+      });
     }
 
     function rerenderAll() {
@@ -1567,8 +1565,10 @@
       if (type === 'error') box.classList.add('error');
     }
 
-    function createHistoryEntry(html) {
+    function createHistoryEntry(html, type = 'system') {
       return {
+        id: crypto.randomUUID(),
+        type,
         html,
         timestamp: new Date().toLocaleString()
       };
@@ -1606,34 +1606,44 @@
       reader.readAsDataURL(file);
     }
 
+    function getMissedWeeks(member, referenceWeek) {
+      if (member.lastMeetingWeek >= referenceWeek) return 0;
+      return referenceWeek - member.lastMeetingWeek;
+    }
+
     function advanceWeek() {
       const previousWeek = currentWeek;
       currentWeek += 1;
 
-      const decayedMembers = [];
+      let decayedCount = 0;
+      const decaySummaries = [];
 
       members.forEach(member => {
         if (member.lastMeetingWeek < previousWeek) {
-          member.assignedMeetings += WEEKLY_DECAY_ASSIGNED;
-          decayedMembers.push(member.name);
+          const missedWeeks = getMissedWeeks(member, previousWeek);
+          const assignedPenalty = WEEKLY_DECAY_ASSIGNED + Math.max(0, missedWeeks - 1);
+          const ratingPenalty = WEEKLY_DECAY_RATING + Math.max(0, missedWeeks - 1) * 6;
+
+          member.assignedMeetings += assignedPenalty;
+          member.rating = Math.max(700, member.rating - ratingPenalty);
+
+          decayedCount += 1;
+          decaySummaries.push(`${member.name} (-${ratingPenalty} score, +${assignedPenalty} expected)`);
         }
       });
 
-      let decayText = '';
-      if (decayedMembers.length > 0) {
-        decayText = `<br/>Weekly decay applied to <strong>${decayedMembers.length}</strong> members who did not log a meeting in Week ${previousWeek}.`;
-      } else {
-        decayText = `<br/>No weekly decay applied because all tracked members logged a meeting in Week ${previousWeek}.`;
-      }
+      const preview = decaySummaries.slice(0, 8).join('<br/>');
+      const extra = decaySummaries.length > 8 ? `<br/>...and <strong>${decaySummaries.length - 8}</strong> more members.` : '';
 
       meetingHistory.push(createHistoryEntry(`
         <strong>Week advanced:</strong> Coffee Yap is now in <strong>Week ${currentWeek}</strong>.
-        ${decayText}
-      `));
+        <br/>Weekly inactivity decay applied to <strong>${decayedCount}</strong> members.
+        ${decayedCount > 0 ? `<br/><br/>${preview}${extra}` : '<br/>No inactivity decay was applied this week.'}
+      `, 'week'));
 
       rerenderAll();
       saveState();
-      setMessage(`Moved to Week ${currentWeek}. Weekly decay has been applied for inactive members.`, 'success');
+      setMessage(`Moved to Week ${currentWeek}. Inactivity decay was strengthened and applied.`, 'success');
     }
 
     function goBackWeek() {
@@ -1646,7 +1656,8 @@
       meetingHistory.push(createHistoryEntry(`
         <strong>Week adjusted:</strong> Coffee Yap was moved back to <strong>Week ${currentWeek}</strong>.
         <br/>No decay was reversed automatically.
-      `));
+      `, 'week'));
+
       rerenderAll();
       saveState();
       setMessage(`Moved back to Week ${currentWeek}.`, 'success');
@@ -1708,7 +1719,7 @@
           <br/>${photoHTML}
         `;
 
-        meetingHistory.push(createHistoryEntry(eventText));
+        meetingHistory.push(createHistoryEntry(eventText, 'meeting'));
         rerenderAll();
         saveState();
         resetUploadUI();
@@ -1725,6 +1736,9 @@
     }
 
     function resetDemo() {
+      const confirmed = confirm('Reset all Coffee Yap data? This cannot be undone.');
+      if (!confirmed) return;
+
       searchTerm = '';
       resetUploadUI();
       document.getElementById('searchInput').value = '';
@@ -1735,9 +1749,41 @@
       setMessage('Coffee Yap data reset. Ready to start tracking connections again.', 'success');
     }
 
-    function toggleAdminControls() {
-      adminVisible = !adminVisible;
-      document.getElementById('adminControls').classList.toggle('show', adminVisible);
+    function removeHistoryEntry(entryId) {
+      if (!adminVisible) {
+        setMessage('Admin mode required to remove meetings.', 'error');
+        return;
+      }
+
+      const confirmed = confirm('Remove this history entry?');
+      if (!confirmed) return;
+
+      meetingHistory = meetingHistory.filter(entry => entry.id !== entryId);
+      rerenderAll();
+      saveState();
+      setMessage('History entry removed.', 'success');
+    }
+
+    function enterAdminMode() {
+      const input = prompt('Enter admin password:');
+      if (input === null) return;
+
+      if (input !== ADMIN_PASSWORD) {
+        setMessage('Incorrect admin password.', 'error');
+        return;
+      }
+
+      adminVisible = true;
+      document.getElementById('adminPanel').classList.add('show');
+      setMessage('Admin mode unlocked.', 'success');
+      renderHistory();
+    }
+
+    function exitAdminMode() {
+      adminVisible = false;
+      document.getElementById('adminPanel').classList.remove('show');
+      setMessage('Admin mode hidden.', 'success');
+      renderHistory();
     }
 
     document.getElementById('uploadSection').addEventListener('click', () => {
@@ -1761,8 +1807,7 @@
     });
 
     document.getElementById('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      handleFile(file);
+      handleFile(e.target.files[0]);
     });
 
     document.getElementById('removeFile').addEventListener('click', (e) => {
@@ -1771,29 +1816,41 @@
     });
 
     document.getElementById('submitMeetingBtn').addEventListener('click', () => {
-      const memberAId = document.getElementById('memberA').value;
-      const memberBId = document.getElementById('memberB').value;
-      recordCompletedMeeting(memberAId, memberBId);
+      recordCompletedMeeting(
+        document.getElementById('memberA').value,
+        document.getElementById('memberB').value
+      );
     });
 
     document.getElementById('nextWeekBtn').addEventListener('click', advanceWeek);
     document.getElementById('prevWeekBtn').addEventListener('click', goBackWeek);
 
-    document.getElementById('memberA').addEventListener('change', updateDuplicateSelectionState);
-    document.getElementById('memberB').addEventListener('change', updateDuplicateSelectionState);
+    document.getElementById('memberA').addEventListener('change', () => {
+      const a = document.getElementById('memberA');
+      const b = document.getElementById('memberB');
+      if (a.value === b.value) {
+        const fallback = members.find(m => String(m.id) !== a.value);
+        if (fallback) b.value = String(fallback.id);
+      }
+    });
+
+    document.getElementById('memberB').addEventListener('change', () => {
+      const a = document.getElementById('memberA');
+      const b = document.getElementById('memberB');
+      if (a.value === b.value) {
+        const fallback = members.find(m => String(m.id) !== b.value);
+        if (fallback) a.value = String(fallback.id);
+      }
+    });
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       searchTerm = e.target.value;
       renderLeaderboard();
     });
 
+    document.getElementById('adminLoginBtn').addEventListener('click', enterAdminMode);
+    document.getElementById('exitAdminBtn').addEventListener('click', exitAdminMode);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
-
-    document.addEventListener('keydown', (e) => {
-      if (e.shiftKey && (e.key === 'R' || e.key === 'r')) {
-        toggleAdminControls();
-      }
-    });
 
     loadState();
     renderSelects();
