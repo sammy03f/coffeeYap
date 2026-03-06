@@ -27,6 +27,8 @@
       --border: rgba(90, 122, 77, 0.12);
       --shadow: 0 8px 30px rgba(90, 122, 77, 0.10);
       --shadow-strong: 0 14px 40px rgba(90, 122, 77, 0.16);
+      --danger: #b64545;
+      --danger-dark: #993737;
     }
 
     html {
@@ -55,8 +57,12 @@
       50% { transform: scale(1.02); }
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     .navbar {
-      background: rgba(248, 249, 245, 0.82);
+      background: rgba(248, 249, 245, 0.86);
       padding: 18px 36px;
       display: flex;
       justify-content: space-between;
@@ -66,12 +72,14 @@
       z-index: 100;
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
+      gap: 18px;
     }
 
     .logo-section {
       display: flex;
       align-items: center;
       gap: 16px;
+      min-width: 0;
     }
 
     .logo {
@@ -106,37 +114,48 @@
 
     .nav-menu {
       display: flex;
-      gap: 34px;
+      gap: 14px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .nav-link {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--green-700);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       cursor: pointer;
       text-decoration: none;
-      transition: color 0.2s, opacity 0.2s;
+      transition: all 0.2s;
       opacity: 0.9;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
     }
 
-    .nav-link:hover {
+    .nav-link:hover,
+    .nav-link.active {
       color: var(--green-500);
       opacity: 1;
+      background: var(--green-50);
+      border-color: var(--border);
     }
 
     .admin-controls {
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .admin-panel {
       display: none;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .admin-panel.show {
@@ -183,10 +202,18 @@
     }
 
     .cta-button.danger {
-      background: linear-gradient(135deg, #b64545 0%, #993737 100%);
+      background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
       color: white;
-      border: none;
       box-shadow: 0 4px 12px rgba(182, 69, 69, 0.25);
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .page.active {
+      display: block;
     }
 
     .hero-section {
@@ -235,7 +262,8 @@
       z-index: 1;
     }
 
-    .hero-text h1 {
+    .hero-text h1,
+    .page-hero h1 {
       font-size: clamp(42px, 6vw, 76px);
       font-weight: 900;
       line-height: 1.02;
@@ -246,7 +274,8 @@
       max-width: 760px;
     }
 
-    .hero-subtitle {
+    .hero-subtitle,
+    .page-subtitle {
       font-size: 13px;
       font-weight: 900;
       color: var(--green-500);
@@ -260,15 +289,17 @@
       border: 1px solid rgba(90, 122, 77, 0.16);
     }
 
-    .hero-description {
+    .hero-description,
+    .page-description {
       font-size: 19px;
       line-height: 1.7;
       color: var(--green-700);
       margin-bottom: 28px;
-      max-width: 700px;
+      max-width: 760px;
     }
 
-    .hero-description strong {
+    .hero-description strong,
+    .page-description strong {
       font-weight: 900;
       color: var(--green-600);
     }
@@ -305,7 +336,7 @@
       border-radius: 18px;
       border: 1.5px solid rgba(90, 122, 77, 0.14);
       box-shadow: 0 8px 24px rgba(90, 122, 77, 0.08);
-      max-width: 680px;
+      max-width: 760px;
     }
 
     .week-panel-label {
@@ -434,10 +465,16 @@
       border-top-right-radius: 52% 100%;
     }
 
-    .main-content {
+    .main-content,
+    .page-main {
       max-width: 1280px;
       margin: 0 auto;
       padding: 64px 40px;
+    }
+
+    .page-hero {
+      max-width: 1280px;
+      margin: 0 auto 36px;
     }
 
     .engagement-banner {
@@ -509,6 +546,18 @@
       align-items: start;
     }
 
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+    }
+
     .card {
       background: white;
       border-radius: 24px;
@@ -545,24 +594,47 @@
       font-weight: 500;
     }
 
-    .search-container {
+    .search-container,
+    .card-toolbar {
       padding: 22px 34px;
       border-bottom: 1.5px solid #edf2e8;
       background: var(--surface-soft);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .search-input {
+    .search-input,
+    .toolbar-input,
+    .toolbar-select {
       width: 100%;
       padding: 14px 18px 14px 46px;
       border: 2px solid #e1e8dc;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 500;
-      background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235a7a4d" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat 16px center;
+      background: white;
       transition: all 0.2s;
+      color: var(--green-700);
     }
 
-    .search-input:focus {
+    .search-input {
+      background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235a7a4d" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat 16px center;
+    }
+
+    .toolbar-input,
+    .toolbar-select {
+      padding-left: 18px;
+      width: auto;
+      min-width: 220px;
+      flex: 1;
+    }
+
+    .search-input:focus,
+    .toolbar-input:focus,
+    .toolbar-select:focus,
+    select:focus {
       outline: none;
       border-color: #5a7a4d;
       box-shadow: 0 0 0 4px rgba(90, 122, 77, 0.08);
@@ -595,7 +667,7 @@
     }
 
     td {
-      padding: 20px 14px;
+      padding: 18px 14px;
       border-bottom: 1px solid #f0f3ed;
       font-size: 15px;
       vertical-align: middle;
@@ -634,13 +706,15 @@
       font-weight: 600;
     }
 
-    .status-badge {
+    .status-badge,
+    .role-badge,
+    .pair-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 999px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       background: linear-gradient(135deg, #e8f0e4 0%, #f0f5ec 100%);
       color: #4a6a3d;
@@ -680,12 +754,6 @@
       font-weight: 600;
       transition: all 0.2s;
       color: #2a3a24;
-    }
-
-    select:focus {
-      outline: none;
-      border-color: #5a7a4d;
-      box-shadow: 0 0 0 4px rgba(90, 122, 77, 0.08);
     }
 
     .upload-section {
@@ -795,7 +863,8 @@
       margin-top: 28px;
     }
 
-    .btn-primary {
+    .btn-primary,
+    .mini-btn {
       background: linear-gradient(135deg, #5a7a4d 0%, #4a6a3d 100%);
       color: white;
       padding: 16px 28px;
@@ -810,9 +879,36 @@
       box-shadow: 0 4px 12px rgba(90, 122, 77, 0.25);
     }
 
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(90, 122, 77, 0.35);
+    .mini-btn {
+      padding: 10px 14px;
+      font-size: 12px;
+      border-radius: 10px;
+      box-shadow: none;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      font-weight: 800;
+    }
+
+    .mini-btn.secondary {
+      background: white;
+      color: var(--green-500);
+      border: 2px solid var(--green-500);
+    }
+
+    .mini-btn.ghost {
+      background: #f0f3ed;
+      color: var(--green-700);
+    }
+
+    .mini-btn.danger {
+      background: #fff4f4;
+      color: #9a2f2f;
+      border: 1px solid #e7bbbb;
+    }
+
+    .btn-primary:hover:not(:disabled),
+    .mini-btn:hover {
+      transform: translateY(-1px);
     }
 
     .btn-primary:disabled {
@@ -943,16 +1039,6 @@
 
     .history-remove-btn {
       display: none;
-      background: #fff4f4;
-      border: 1px solid #e7bbbb;
-      color: #9a2f2f;
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
     }
 
     .history-remove-btn.show {
@@ -967,15 +1053,19 @@
       border: 2px solid rgba(90, 122, 77, 0.1);
     }
 
-    .impact-grid {
+    .impact-grid,
+    .directory-summary-grid,
+    .pair-summary-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 28px;
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
-    .impact-card {
+    .impact-card,
+    .summary-card,
+    .pair-card {
       text-align: center;
       padding: 32px 24px;
       background: white;
@@ -984,30 +1074,171 @@
       transition: all 0.3s;
     }
 
-    .impact-card:hover {
+    .impact-card:hover,
+    .summary-card:hover,
+    .pair-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 8px 24px rgba(90, 122, 77, 0.15);
     }
 
-    .impact-icon {
+    .impact-icon,
+    .summary-icon {
       font-size: 48px;
       margin-bottom: 16px;
     }
 
-    .impact-title {
+    .impact-title,
+    .summary-title {
       font-size: 18px;
       font-weight: 900;
       color: #2a3a24;
       margin-bottom: 8px;
     }
 
-    .impact-text {
+    .impact-text,
+    .summary-text {
       font-size: 14px;
       color: #5a7a4d;
       line-height: 1.6;
       font-weight: 600;
     }
 
+    .directory-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .person-card {
+      border: 1.5px solid #e8ede4;
+      border-radius: 18px;
+      padding: 18px;
+      background: #fcfdfb;
+      transition: all 0.2s;
+    }
+
+    .person-card:hover {
+      box-shadow: var(--shadow);
+      border-color: rgba(90, 122, 77, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .person-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .person-name {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--green-700);
+      line-height: 1.25;
+    }
+
+    .person-major {
+      font-size: 13px;
+      color: #5f6f58;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .person-details {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .detail-row {
+      font-size: 14px;
+      color: #344030;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .detail-label {
+      color: #6b8a5e;
+      font-weight: 800;
+      margin-right: 8px;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .person-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pairings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .pairing-card {
+      border: 1.5px solid #e8ede4;
+      border-radius: 18px;
+      padding: 20px;
+      background: #fcfdfb;
+      transition: all 0.2s;
+    }
+
+    .pairing-card:hover {
+      box-shadow: var(--shadow);
+      border-color: rgba(90, 122, 77, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .pairing-number {
+      font-size: 12px;
+      font-weight: 900;
+      color: #6b8a5e;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .pairing-members {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .pair-member {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--green-50);
+      border: 1px solid #dce7d4;
+    }
+
+    .pair-member-name {
+      font-weight: 900;
+      color: var(--green-700);
+      font-size: 15px;
+    }
+
+    .pair-member-meta {
+      font-size: 13px;
+      color: #5f6f58;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .pairing-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pairings-empty,
     .empty-state {
       text-align: center;
       color: #87937f;
@@ -1015,9 +1246,19 @@
       font-weight: 600;
     }
 
+    .soft-note {
+      font-size: 14px;
+      color: #5f6f58;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
     @media (max-width: 1100px) {
       .hero-content,
-      .content-grid {
+      .content-grid,
+      .two-col,
+      .directory-card-grid,
+      .pairings-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1025,7 +1266,9 @@
         display: none;
       }
 
-      .impact-grid {
+      .impact-grid,
+      .directory-summary-grid,
+      .pair-summary-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1033,6 +1276,8 @@
     @media (max-width: 640px) {
       .navbar {
         padding: 18px 20px;
+        align-items: start;
+        flex-direction: column;
       }
 
       .hero-section {
@@ -1043,7 +1288,8 @@
         grid-template-columns: 1fr;
       }
 
-      .main-content {
+      .main-content,
+      .page-main {
         padding: 40px 20px;
       }
 
@@ -1053,7 +1299,8 @@
         padding: 24px 20px;
       }
 
-      .search-container {
+      .search-container,
+      .card-toolbar {
         padding: 20px;
       }
 
@@ -1086,9 +1333,9 @@
     </div>
 
     <div class="nav-menu">
-      <a class="nav-link" href="#leaderboardSection">Leaderboard</a>
-      <a class="nav-link" href="#reportSection">Report Meeting</a>
-      <a class="nav-link" href="#impactSection">Our Purpose</a>
+      <button class="nav-link active" data-page="homePage" type="button">Home</button>
+      <button class="nav-link" data-page="directoryPage" type="button">Directory</button>
+      <button class="nav-link" data-page="pairingsPage" type="button">Pairings</button>
     </div>
 
     <div class="admin-controls">
@@ -1101,199 +1348,312 @@
     </div>
   </nav>
 
-  <section class="hero-section">
-    <div class="hero-content">
-      <div class="hero-text">
-        <div class="hero-subtitle">Connection Tracking System</div>
-        <h1>FOSTERING MEANINGFUL RELATIONSHIPS</h1>
-        <p class="hero-description">
-          Coffee Yap transforms casual coffee chats into <strong>intentional community building</strong>.
-          Every meeting strengthens bonds, creates opportunities for collaboration, and builds a
-          <strong>culture of reliability</strong> and <strong>mutual support</strong> within our organization.
-        </p>
+  <!-- HOME PAGE -->
+  <section class="page active" id="homePage">
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-subtitle">Connection Tracking System</div>
+          <h1>FOSTERING MEANINGFUL RELATIONSHIPS</h1>
+          <p class="hero-description">
+            Coffee Yap transforms casual coffee chats into <strong>intentional community building</strong>.
+            Every meeting strengthens bonds, creates opportunities for collaboration, and builds a
+            <strong>culture of reliability</strong> and <strong>mutual support</strong> within our organization.
+          </p>
 
-        <div class="purpose-highlight">
-          <div class="purpose-title">Our Mission</div>
-          <div class="purpose-text">
-            To create a thriving community where every member feels connected, supported, and engaged.
-            By tracking and celebrating consistent participation, we ensure everyone has meaningful
-            connections and nobody feels left behind.
+          <div class="purpose-highlight">
+            <div class="purpose-title">Our Mission</div>
+            <div class="purpose-text">
+              To create a thriving community where every member feels connected, supported, and engaged.
+              By tracking and celebrating consistent participation, we ensure everyone has meaningful
+              connections and nobody feels left behind.
+            </div>
+          </div>
+
+          <div class="week-panel">
+            <div class="week-panel-label">Progress Tracker</div>
+            <div class="week-panel-row">
+              <div>
+                <div class="week-value" id="weekValue">Week 1</div>
+                <div class="week-subtext">Advancing the week updates pairings and applies stronger inactivity decay</div>
+              </div>
+              <div class="week-actions">
+                <button class="week-btn secondary" id="prevWeekBtn" type="button">Back</button>
+                <button class="week-btn" id="nextWeekBtn" type="button">Advance Week</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="week-panel">
-          <div class="week-panel-label">Progress Tracker</div>
-          <div class="week-panel-row">
-            <div>
-              <div class="week-value" id="weekValue">Week 1</div>
-              <div class="week-subtext">Advance the Coffee Yap cycle manually and apply weekly inactivity decay</div>
+        <div class="hero-stats" id="heroStats"></div>
+      </div>
+      <div class="wave-divider"></div>
+    </section>
+
+    <main class="main-content">
+      <div class="engagement-banner">
+        <h2>WHY CONNECTION MATTERS</h2>
+        <p>
+          Strong communities are built on consistent, meaningful interactions. Coffee Yap helps track
+          engagement, recognize active members, and identify opportunities to strengthen relationships.
+          Together, we’re creating an inclusive environment where everyone thrives.
+        </p>
+      </div>
+
+      <section>
+        <h2 class="section-title">COMMUNITY LEADERBOARD</h2>
+        <p class="section-description">
+          Recognizing members who actively invest in building relationships and strengthening our community
+          through consistent engagement and follow-through.
+        </p>
+      </section>
+
+      <div class="content-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Current Rankings</h3>
+            <p class="card-subtitle">
+              Members ranked by engagement activity, reliability, and contribution to community building
+            </p>
+          </div>
+
+          <div class="search-container">
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              placeholder="Search members by name..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Member</th>
+                  <th>Score</th>
+                  <th>Reliability</th>
+                  <th>Meetings</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Report Meeting</h3>
+            <p class="card-subtitle">
+              Log a completed Coffee Yap meeting and upload a photo to celebrate the connection
+            </p>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label class="form-label" for="memberA">First Member</label>
+              <select id="memberA"></select>
             </div>
-            <div class="week-actions">
-              <button class="week-btn secondary" id="prevWeekBtn" type="button">Back</button>
-              <button class="week-btn" id="nextWeekBtn" type="button">Advance Week</button>
+
+            <div class="form-group">
+              <label class="form-label" for="memberB">Second Member</label>
+              <select id="memberB"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Meeting Photo (Required)</label>
+              <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">Click or drag a photo here</div>
+                <div class="upload-subtext">A meeting photo is required for every submission</div>
+              </div>
+
+              <div class="file-preview" id="filePreview">
+                <span class="file-preview-icon">✓</span>
+                <span class="file-preview-name" id="fileName"></span>
+                <button class="file-remove" id="removeFile" type="button">Remove</button>
+              </div>
+
+              <div class="image-preview-wrap" id="imagePreviewWrap">
+                <img id="imagePreview" class="image-preview" alt="Selected upload preview" />
+              </div>
+
+              <input type="file" id="fileInput" accept="image/*" />
+              <div class="helper-text">Uploads accept image files only.</div>
+            </div>
+
+            <div class="button-group">
+              <button class="btn-primary" id="submitMeetingBtn" type="button">Submit Meeting</button>
+            </div>
+
+            <div class="message-box" id="messageBox">
+              Select two members and submit to record a meeting. A photo is required for every Coffee Yap submission.
+            </div>
+
+            <div class="info-section">
+              <div class="info-title">The Power of Showing Up</div>
+              <div class="info-text">
+                Every meeting you complete strengthens the entire community. When you <strong>consistently
+                show up</strong> for coffee chats, you’re not just building your own network—you’re helping
+                create a <strong>culture of reliability</strong> that everyone benefits from. Members who
+                engage with those who are less active help <strong>re-activate connections</strong> and ensure
+                nobody feels isolated.
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="hero-stats" id="heroStats"></div>
-    </div>
-    <div class="wave-divider"></div>
+      <section class="impact-section">
+        <h2 class="section-title" style="color: #2a3a24; margin-bottom: 48px;">OUR IMPACT</h2>
+        <div class="impact-grid">
+          <div class="impact-card">
+            <div class="impact-icon">🤝</div>
+            <div class="impact-title">Stronger Bonds</div>
+            <div class="impact-text">
+              Regular coffee chats create lasting friendships and professional relationships
+            </div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-icon">💡</div>
+            <div class="impact-title">Better Collaboration</div>
+            <div class="impact-text">
+              Personal connections lead to more effective teamwork and knowledge sharing
+            </div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-icon">🌱</div>
+            <div class="impact-title">Inclusive Culture</div>
+            <div class="impact-text">
+              Everyone feels valued, heard, and connected to the broader community
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="section-title">RECENT CONNECTIONS</h2>
+      <p class="section-description">
+        Latest Coffee Yap meetings and the relationships being built across our community
+      </p>
+
+      <div class="history-section">
+        <ul class="history-list" id="historyList"></ul>
+      </div>
+    </main>
   </section>
 
-  <main class="main-content">
-    <div class="engagement-banner">
-      <h2>WHY CONNECTION MATTERS</h2>
-      <p>
-        Strong communities are built on consistent, meaningful interactions. Coffee Yap helps track
-        engagement, recognize active members, and identify opportunities to strengthen relationships.
-        Together, we’re creating an inclusive environment where everyone thrives.
-      </p>
-    </div>
-
-    <section id="leaderboardSection">
-      <h2 class="section-title">COMMUNITY LEADERBOARD</h2>
-      <p class="section-description">
-        Recognizing members who actively invest in building relationships and strengthening our community
-        through consistent engagement and follow-through.
-      </p>
+  <!-- DIRECTORY PAGE -->
+  <section class="page" id="directoryPage">
+    <section class="hero-section" style="padding-bottom: 90px;">
+      <div class="page-hero">
+        <div class="page-subtitle">Active Participants Directory</div>
+        <h1>CONTACTS AT A GLANCE</h1>
+        <p class="page-description">
+          A clean directory of <strong>active Coffee Yap participants</strong> with phone numbers, emails, roles,
+          and majors. Abroad members are excluded from active pairing rotations.
+        </p>
+      </div>
+      <div class="wave-divider"></div>
     </section>
 
-    <div class="content-grid">
+    <main class="page-main">
+      <section class="impact-section" style="margin-top: -10px;">
+        <div class="directory-summary-grid">
+          <div class="summary-card">
+            <div class="summary-icon">📱</div>
+            <div class="summary-title" id="directoryCountStat">0 Active Participants</div>
+            <div class="summary-text">Quick phone access for current active members</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">🏷️</div>
+            <div class="summary-title" id="directoryRoleStat">0 Roles</div>
+            <div class="summary-text">Filter by exec, cabinet, PM, consultant, and more</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">⚡</div>
+            <div class="summary-title">One-Click Actions</div>
+            <div class="summary-text">Copy numbers, copy emails, and search instantly</div>
+          </div>
+        </div>
+      </section>
+
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Current Rankings</h3>
+          <h3 class="card-title">Participant Directory</h3>
           <p class="card-subtitle">
-            Members ranked by engagement activity, reliability, and contribution to community building
+            Active participants only. Search by name, role, major, email, or phone.
           </p>
         </div>
 
-        <div class="search-container">
-          <input
-            type="text"
-            class="search-input"
-            id="searchInput"
-            placeholder="Search members by name..."
-            autocomplete="off"
-          />
+        <div class="card-toolbar">
+          <input type="text" id="directorySearch" class="toolbar-input" placeholder="Search active participants..." />
+          <select id="directoryRoleFilter" class="toolbar-select">
+            <option value="all">All Roles</option>
+          </select>
+          <button class="mini-btn secondary" id="copyAllPhonesBtn" type="button">Copy All Phones</button>
         </div>
 
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Member</th>
-                <th>Score</th>
-                <th>Reliability</th>
-                <th>Meetings</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboardBody"></tbody>
-          </table>
-        </div>
+        <div class="directory-card-grid" id="directoryGrid"></div>
       </div>
+    </main>
+  </section>
 
-      <div class="card" id="reportSection">
-        <div class="card-header">
-          <h3 class="card-title">Report Meeting</h3>
-          <p class="card-subtitle">
-            Log a completed Coffee Yap meeting and upload a photo to celebrate the connection
-          </p>
-        </div>
-
-        <div class="form-section">
-          <div class="form-group">
-            <label class="form-label" for="memberA">First Member</label>
-            <select id="memberA"></select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="memberB">Second Member</label>
-            <select id="memberB"></select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Meeting Photo (Required)</label>
-            <div class="upload-section" id="uploadSection">
-              <div class="upload-icon">📸</div>
-              <div class="upload-text">Click or drag a photo here</div>
-              <div class="upload-subtext">A meeting photo is required for every submission</div>
-            </div>
-
-            <div class="file-preview" id="filePreview">
-              <span class="file-preview-icon">✓</span>
-              <span class="file-preview-name" id="fileName"></span>
-              <button class="file-remove" id="removeFile" type="button">Remove</button>
-            </div>
-
-            <div class="image-preview-wrap" id="imagePreviewWrap">
-              <img id="imagePreview" class="image-preview" alt="Selected upload preview" />
-            </div>
-
-            <input type="file" id="fileInput" accept="image/*" />
-            <div class="helper-text">Uploads accept image files only.</div>
-          </div>
-
-          <div class="button-group">
-            <button class="btn-primary" id="submitMeetingBtn" type="button">Submit Meeting</button>
-          </div>
-
-          <div class="message-box" id="messageBox">
-            Select two members and submit to record a meeting. A photo is required for every Coffee Yap submission.
-          </div>
-
-          <div class="info-section">
-            <div class="info-title">The Power of Showing Up</div>
-            <div class="info-text">
-              Every meeting you complete strengthens the entire community. When you <strong>consistently
-              show up</strong> for coffee chats, you’re not just building your own network—you’re helping
-              create a <strong>culture of reliability</strong> that everyone benefits from. Members who
-              engage with those who are less active help <strong>re-activate connections</strong> and ensure
-              nobody feels isolated.
-            </div>
-          </div>
-        </div>
+  <!-- PAIRINGS PAGE -->
+  <section class="page" id="pairingsPage">
+    <section class="hero-section" style="padding-bottom: 90px;">
+      <div class="page-hero">
+        <div class="page-subtitle">Weekly Pairings</div>
+        <h1>CURRENT COFFEE YAP MATCHES</h1>
+        <p class="page-description">
+          Pairings are generated from the <strong>current active participant list</strong> and automatically
+          update whenever the <strong>week increments</strong>. If the count is odd, one trio is created.
+        </p>
       </div>
-    </div>
-
-    <section class="impact-section" id="impactSection">
-      <h2 class="section-title" style="color: #2a3a24; margin-bottom: 48px;">OUR IMPACT</h2>
-      <div class="impact-grid">
-        <div class="impact-card">
-          <div class="impact-icon">🤝</div>
-          <div class="impact-title">Stronger Bonds</div>
-          <div class="impact-text">
-            Regular coffee chats create lasting friendships and professional relationships
-          </div>
-        </div>
-        <div class="impact-card">
-          <div class="impact-icon">💡</div>
-          <div class="impact-title">Better Collaboration</div>
-          <div class="impact-text">
-            Personal connections lead to more effective teamwork and knowledge sharing
-          </div>
-        </div>
-        <div class="impact-card">
-          <div class="impact-icon">🌱</div>
-          <div class="impact-title">Inclusive Culture</div>
-          <div class="impact-text">
-            Everyone feels valued, heard, and connected to the broader community
-          </div>
-        </div>
-      </div>
+      <div class="wave-divider"></div>
     </section>
 
-    <h2 class="section-title">RECENT CONNECTIONS</h2>
-    <p class="section-description">
-      Latest Coffee Yap meetings and the relationships being built across our community
-    </p>
+    <main class="page-main">
+      <section class="impact-section" style="margin-top: -10px;">
+        <div class="pair-summary-grid">
+          <div class="summary-card">
+            <div class="summary-icon">🗓️</div>
+            <div class="summary-title" id="pairingWeekStat">Week 1</div>
+            <div class="summary-text">Current pairing cycle</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">👥</div>
+            <div class="summary-title" id="pairingCountStat">0 Pairings</div>
+            <div class="summary-text">Randomized from active participants</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-icon">🔄</div>
+            <div class="summary-title">Auto Refreshes</div>
+            <div class="summary-text">Updates every time the week moves forward</div>
+          </div>
+        </div>
+      </section>
 
-    <div class="history-section">
-      <ul class="history-list" id="historyList"></ul>
-    </div>
-  </main>
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">This Week’s Pairings</h3>
+          <p class="card-subtitle">
+            Deterministic by week number so everyone sees the same pairings for the same week.
+          </p>
+        </div>
+
+        <div class="card-toolbar">
+          <div class="soft-note">Week changes create a new randomized set of pairings automatically.</div>
+          <button class="mini-btn secondary" id="copyPairingsBtn" type="button">Copy Pairings</button>
+          <button class="mini-btn ghost" id="refreshPairingsBtn" type="button">Refresh View</button>
+        </div>
+
+        <div class="pairings-grid" id="pairingsGrid"></div>
+      </div>
+    </main>
+  </section>
 
   <script>
     const BASE_RATING = 1000;
@@ -1302,25 +1662,88 @@
     const BENCHMARK_COMPLETED = 4;
     const BENCHMARK_EXPECTED = 6;
 
-    const WEEKLY_DECAY_ASSIGNED = 2;
-    const WEEKLY_DECAY_RATING = 12;
+    const WEEKLY_DECAY_ASSIGNED = 3;
+    const WEEKLY_DECAY_RATING = 18;
     const ADMIN_PASSWORD = 'coffeeadmin';
 
-    const starterMembers = [
-      'Matthew McConnel', 'Ridwan Saleh', 'Henry Crabtree', 'Anya Reddy', 'Adya Kadam',
-      'Mitalee Pasricha', 'Tejasv Bhatia', 'Sophie Lu', 'Mateu Espinos', 'Adhya Kasamsetty',
-      'Dylan Westheimer', 'Risha Suvarna', 'Tara Valeti', 'Emma Li', 'Sriram Bhimaraju',
-      'Aidan James', 'Emanuel Simic', 'Clarissa Wing', 'Eve Weekes', 'Rohan Tirumala',
-      'Shinmu Jiang', 'Aanya Chakraborty', 'Audrey Mei Qi Moo', 'Daniel Harith', 'Nathan Leung',
-      "Kip'a Junobi Ree", 'Shaya Sharifi', 'Tanya Wei', 'Adib Zafry', 'Melody Li',
-      'Emanuel Luo', 'Jason Li', 'Kaya Hoeberechts', 'Carol Xu', 'Vir Shah',
-      "Kate O'Hara", 'Nina Zhu', 'Sriya Amati', 'Nicole Martinez', 'Catherine Phan',
-      'Hannah Shiohara', 'Ria Sudhir', 'Joseph Piccione', 'Rohan Tawade', 'Mia Farrar',
-      'Pasha Amirahmadi', 'Sophia Mistry', 'Kharisa Tamphanuwat', 'Abigail Daniyan', 'Misael Villalta',
-      'Samuel Fisher', 'Savannah Haile', 'Gia-Minh Vo', 'Ashley Madera', 'Shreya Bhatia',
-      'Ari Funk', 'Phillip Kim', 'Sakina Ganijee', 'Disha Ram', 'Nathaniel Seale',
-      'Preisha Agarwal', 'Srijay Vejendla', 'Jake Thiry', 'Jennifer Liu'
+    const participantDirectory = [
+      { name: 'Tara Valeti', role: 'Exec', phone: '6514473592', email: 'tvaleti@berkeley.edu', birthday: 'March 30, 2005', major: 'MCB/CS' },
+      { name: 'Carol Xu', role: 'Exec', phone: '9356942693', email: 'carol.xu@berkeley.edu', birthday: 'February 2, 2005', major: 'Political Science, Media Studies' },
+      { name: 'Joseph Piccione', role: 'Exec', phone: '6692640671', email: 'joseph_piccione@berkeley.edu', birthday: 'July 18, 2004', major: 'Business Admin' },
+      { name: 'Catherine Phan', role: 'Exec', phone: '9168310232', email: 'Kdphan27@berkeley.edu', birthday: 'February 27, 2006', major: 'MCB' },
+      { name: 'Jake Thiry', role: 'Exec', phone: '5109256550', email: 'jake_thiry@berkeley.edu', birthday: 'October 13, 2005', major: 'Applied Math and Data Science' },
+      { name: 'Sophie Lu', role: 'Cabinet', phone: '4257538809', email: 'sophieclu@berkeley.edu', birthday: 'September 7, 2005', major: 'Microbial Biology' },
+      { name: 'Rohan Tirumala', role: 'Cabinet', phone: '4085063676', email: 'rohant@berkeley.edu', birthday: 'January 29, 2005', major: 'MCB + Data Science' },
+      { name: 'Rohan Tawade', role: 'Cabinet', phone: '4086379313', email: 'rohantawade@berkeley.edu', birthday: 'December 5, 2003', major: 'MCB Neurobiology + Cognitive Science' },
+      { name: 'Preisha Agarwal', role: 'Cabinet', phone: '5512719538', email: 'preisha.agarwal@berkeley.edu', birthday: 'June 30, 2005', major: 'Business Administration and Data Science' },
+      { name: 'Sakina Ganijee', role: 'Cabinet', phone: '8582088349', email: 'smganijee@berkeley.edu', birthday: 'March 8, 2025', major: 'Industrial Engineering and Operations Research' },
+      { name: 'Abhinav Penagalapati', role: 'Project Manager', phone: '6692684518', email: 'abhip@berkeley.edu', birthday: 'April 29, 2006', major: 'Econ + DS' },
+      { name: 'Clarissa Wing', role: 'Project Manager', phone: '6504573220', email: 'clarissawing@berkeley.edu', birthday: 'November 21, 2004', major: 'Political Economy' },
+      { name: 'Mia Farrar', role: 'Project Manager', phone: '8056185054', email: 'Miafarrar@berkeley.edu', birthday: 'March 19, 2006', major: 'Economics and Cognitive Science' },
+      { name: 'Mitalee Pasricha', role: 'Project Manager', phone: '7329915562', email: 'mpasricha@berkeley.edu', birthday: 'May 31, 2005', major: 'Environmental Sciences and Environmental Economics & Policy' },
+      { name: 'Nathan Leung', role: 'Project Manager', phone: '4247315338', email: 'nathan_leung@berkeley.edu', birthday: 'June 18, 2006', major: 'Business Administration and Data Science' },
+      { name: 'Ria Sudhir', role: 'Project Manager', phone: '6692603373', email: 'riasudhir@berkeley.edu', birthday: 'October 3, 2006', major: 'Data Science & Political Economy' },
+      { name: 'Srijay Vejendla', role: 'Project Manager', phone: '4088335508', email: 'srijay_vejendla@berkeley.edu', birthday: 'August 15, 2006', major: 'Business Administration, Data Science' },
+      { name: 'Sriya Amati', role: 'Project Manager', phone: '97294615516', email: 'amati_sriya@berkeley.edu', birthday: 'December 6, 2005', major: 'Neuroscience' },
+      { name: 'Sriram Bhimaraju', role: 'Project Manager', phone: '4088213269', email: 'sriramb@berkeley.edu', birthday: 'January 14, 2006', major: 'EECS and Business' },
+      { name: 'Tanya Wei', role: 'Project Manager', phone: '6263140992', email: 'tanyawei@berkeley.edu', birthday: 'September 29, 2006', major: 'Econ & Polsci' },
+      { name: 'Gia-Minh Vo', role: 'Senior Consultant', phone: '5109992198', email: 'Giaminhvo@berkeley.edu', birthday: 'October 20, 2006', major: 'Environmental Science and Economics' },
+      { name: 'Shreya Bhatia', role: 'Senior Consultant', phone: '3093070211', email: 'shreya_bhatia@berkeley.edu', birthday: 'October 14, 2005', major: 'Psychology, Social Welfare, Sociology' },
+      { name: 'Savannah Haile', role: 'Senior Consultant', phone: '9167537280', email: 'sav.haile@berkeley.edu', birthday: 'August 14, 2007', major: 'Political Economy and Legal Studies' },
+      { name: 'Dylan Westheimer', role: 'Senior Consultant', phone: '3108820189', email: 'dylanwestheimer@berkeley.edu', birthday: 'September 4, 2006', major: 'Environmental Economics' },
+      { name: 'Ari Funk', role: 'Senior Consultant', phone: '5302646680', email: 'ari_funk@berkeley.edu', birthday: 'May 8, 2007', major: 'Spieker Business Program (Haas)' },
+      { name: "Kip'a Junobi Ree", role: 'Consultant', phone: '6195107355', email: 'junobi@berkeley.edu', birthday: 'June 3, 2007', major: 'Global Management Program (GMP)' },
+      { name: 'Anya Reddy', role: 'Consultant', phone: '6698884879', email: 'anya.reddy@berkeley.edu', birthday: 'September 25, 2007', major: 'Business Admin' },
+      { name: 'Misael Villalta', role: 'Consultant', phone: '4155185680', email: 'MisaelVi@berkeley.edu', birthday: 'September 17, 2007', major: 'Economics' },
+      { name: 'Samuel Fisher', role: 'Consultant', phone: '3522192606', email: 'samuelfisher@berkeley.edu', birthday: 'December 15, 2003', major: 'Applied Math' },
+      { name: 'Emanuel Simic', role: 'Consultant', phone: '5105296238', email: 'emanuelsimic@berkeley.edu', birthday: 'March 10, 2007', major: 'Math' },
+      { name: 'Kharisa Tamphanuwat', role: 'Consultant', phone: '6282654289', email: 'kharisa@berkeley.edu', birthday: 'September 17, 2007', major: 'Intended Economics and Data Science' },
+      { name: 'Adya Kadam', role: 'Newbie', phone: '5109803566', email: 'adyakadam@berkeley.edu', birthday: 'December 15, 2006', major: 'Electrical Engineering and Computer Science' },
+      { name: 'Disha Ram', role: 'Newbie', phone: '5018308970', email: 'disharam@berkeley.edu', birthday: 'February 17, 2007', major: 'MCB & Social Welfare' },
+      { name: 'Eve Weekes', role: 'Newbie', phone: '7609088781', email: 'eveweekes@berkeley.edu', birthday: 'March 26, 2007', major: 'Environmental Engineering' },
+      { name: 'Henry Crabtree', role: 'Newbie', phone: '8587765515', email: 'henry_crabtree@berkeley.edu', birthday: 'December 28, 2006', major: 'Applied Mathematics' },
+      { name: 'Kaya Hoeberechts', role: 'Newbie', phone: '9257871896', email: 'kaya.hoeberechts@berkeley.edu', birthday: 'September 29, 2006', major: 'Business Administration (GMP)' },
+      { name: 'Pasha Amirahmadi', role: 'Newbie', phone: '9493444547', email: 'pasha.a@berkeley.edu', birthday: 'October 23, 2007', major: 'Economics' },
+      { name: 'Nathaniel Seale', role: 'Newbie', phone: '9165450196', email: 'nathanielseale@berkeley.edu', birthday: 'September 26, 2006', major: 'Economics' },
+      { name: 'Mateu Espinos', role: 'Newbie', phone: '8582057457', email: 'mateuespinos@berkeley.edu', birthday: 'June 26, 2007', major: 'Political Economy' },
+      { name: 'Aanya Chakraborty', role: 'Newbie', phone: '5108579059', email: 'aanyachakraborty@berkeley.edu', birthday: 'August 4, 2007', major: 'Public Health + Data Science' },
+      { name: 'Melody Li', role: 'Newbie', phone: '6128003852', email: 'melodycl@berkeley.edu', birthday: 'February 21, 2007', major: 'Business Administration (GMP) and Intended Data Science' },
+      { name: 'Sophia Mistry', role: 'Newbie', phone: '2065034098', email: 'sophia.mistry@berkeley.edu', birthday: 'May 24, 2007', major: 'Mechanical Engineering' },
+      { name: 'Matthew McConnel', role: 'Newbie', phone: '3108037847', email: 'matthew_mcconnell@berkeley.edu', birthday: 'April 19, 2007', major: 'Civil Engineering' },
+      { name: 'Abigail Daniyan', role: 'Senior Advisor', phone: '6612296781', email: 'Abigaildaniyan@berkeley.edu', birthday: 'March 3, 2004', major: 'Psych/Data/Cog Sci' },
+      { name: 'Adhya Kasamsetty', role: 'Senior Advisor', phone: '6696009006', email: 'adhya126@berkeley.edu', birthday: 'January 12, 2006', major: 'Economics and Cognitive Science' },
+      { name: 'Ashley Madera', role: 'Senior Advisor', phone: '9092008973', email: 'Ashleymadera12@berkeley.edu', birthday: 'September 15, 2004', major: 'Sociology and TBD Business' },
+      { name: 'Audrey Mei Qi Moo', role: 'Senior Advisor', phone: '5109907367', email: 'audreymmq@berkeley.edu', birthday: 'August 18, 2003', major: 'Economics and Applied Mathematics' },
+      { name: 'Daniel Harith', role: 'Senior Advisor', phone: '5102299296', email: 'daniel_khiri@berkeley.edu', birthday: 'December 1, 2004', major: 'BS Chemical Engineering' },
+      { name: 'Hannah Shiohara', role: 'Senior Advisor', phone: '5109848812', email: 'hannah.shiohara@berkeley.edu', birthday: 'December 14, 2004', major: 'Econ and DS' },
+      { name: 'Jennifer Liu', role: 'Senior Advisor', phone: '8186185246', email: 'jenniferkliu@berkeley.edu', birthday: 'March 4, 2004', major: 'Business Administration and Computer Science' },
+      { name: 'Nicole Martinez', role: 'Senior Advisor', phone: '3104869744', email: 'nic1304mart@berkeley.edu', birthday: 'November 13, 2004', major: 'Poli Sci' },
+      { name: 'Nina Zhu', role: 'Senior Advisor', phone: '8587762954', email: 'ninayzhu@berkeley.edu', birthday: 'June 10, 2004', major: 'MCB' },
+      { name: 'Phillip Kim', role: 'Senior Advisor', phone: '2133102132', email: 'woosuk_kim@berkeley.edu', birthday: 'August 17, 2002', major: 'Applied Math + Computer Science' },
+      { name: 'Shinmu Jiang', role: 'Senior Advisor', phone: '6503347252', email: 'shinmu.jiang@berkeley.edu', birthday: 'May 23, 2005', major: 'Economics & Computer Science' },
+      { name: 'Aadith Kannan', role: 'Social Member', phone: '4085189744', email: 'aadithkannan@berkeley.edu', birthday: 'December 21, 2004', major: 'Econ/DS' },
+      { name: 'Aidan James', role: 'Social Member', phone: '3109930563', email: 'aidanjames@berkeley.edu', birthday: 'April 22, 2004', major: 'LSBE: Bio + Business' },
+      { name: 'Adib Zafry', role: 'Social Member', phone: '6172518126', email: 'adibzafry@berkeley.edu', birthday: 'October 11, 2002', major: 'Applied Mathematics & Economics' },
+      { name: 'Emanuel Luo', role: 'Social Member', phone: '4085608129', email: 'emanuel_l@berkeley.edu', birthday: 'December 6, 2005', major: 'Economics' },
+      { name: 'Emma Li', role: 'Social Member', phone: '4252298607', email: 'emmazli@berkeley.edu', birthday: 'July 15, 2004', major: 'IEOR' },
+      { name: 'Ridwan Saleh', role: 'Social Member', phone: '8054271883', email: 'ridwansaleh@berkeley.edu', birthday: 'November 12, 2004', major: 'EECS' },
+      { name: 'Risha Suvarna', role: 'Social Member', phone: '6502838686', email: 'rishasuvarna@berkeley.edu', birthday: 'December 21, 2005', major: 'Mechanical Engineering' },
+      { name: 'Kate O’Hara', role: 'Social Member', phone: '6157239823', email: 'Kate_ohara@berkeley.edu', birthday: 'July 23, 2003', major: 'EEP' },
+      { name: 'Kshitij Teotia', role: 'Social Member', phone: '6692109192', email: 'kshitijt@berkeley.edu', birthday: 'June 2, 2006', major: 'EECS' },
+      { name: 'Madeleine Park', role: 'Social Member', phone: '9258228874', email: 'maddypark@berkeley.edu', birthday: 'July 10, 2006', major: 'Business Administration' },
+      { name: 'Jason Li', role: 'Social Member', phone: '4088318991', email: 'jasonli@berkeley.edu', birthday: 'July 22, 2004', major: 'Business + Data Science' },
+      { name: 'Shaya Sharifi', role: 'Social Member', phone: '9494831963', email: 'shayasharifi14@berkeley.edu', birthday: 'March 14, 2005', major: 'Environmental Economics & Policy' },
+      { name: 'Subham Mitra', role: 'Social Member', phone: '2242021423', email: 'subham.mitra@berkeley.edu', birthday: 'January 23, 2006', major: 'EECS' },
+      { name: 'Tejasv Bhatia', role: 'Social Member', phone: '4793608077', email: 'tejasvb@berkeley.edu', birthday: 'August 26, 2004', major: 'Math and CS' },
+      { name: 'Vir Shah', role: 'Social Member', phone: '8324967448', email: '', birthday: '', major: 'Sign return offer***' },
+      { name: 'Samuel Rogers', role: 'Abroad', phone: '3102596250', email: 'samuelrogers@berkeley.edu', birthday: 'August 12, 2025', major: 'Econ Data Science' },
+      { name: 'Isabella Solorzano', role: 'Abroad', phone: '5623210802', email: 'isasolo24@berkeley.edu', birthday: 'June 24, 2005', major: 'Economics' },
+      { name: 'Ethan Ridings', role: 'Abroad', phone: '6039035707', email: 'eridings_05@berkeley.edu', birthday: 'September 30, 2005', major: 'Environmental Economics and Policy' }
     ];
+
+    const starterMembers = participantDirectory
+      .filter(person => person.role !== 'Abroad')
+      .map(person => person.name);
 
     let members = [];
     let meetingHistory = [];
@@ -1328,6 +1751,9 @@
     let currentFile = null;
     let currentWeek = 1;
     let adminVisible = false;
+    let directorySearchTerm = '';
+    let directoryRoleFilter = 'all';
+    let currentPage = 'homePage';
 
     function initializeMembers() {
       members = starterMembers.map((name, index) => ({
@@ -1342,17 +1768,28 @@
       currentWeek = 1;
 
       meetingHistory = [
-        {
-          id: crypto.randomUUID(),
-          type: 'system',
-          html: 'System initialized. All members start with baseline engagement score. Let’s build connections!',
-          timestamp: new Date().toLocaleString()
-        }
+        createHistoryEntry('System initialized. All members start with baseline engagement score. Let’s build connections!', 'system')
       ];
     }
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
+    }
+
+    function normalizePhone(phone) {
+      return String(phone || '').replace(/[^\d+]/g, '');
+    }
+
+    function formatPhone(phone) {
+      const digits = normalizePhone(phone);
+      if (digits.length === 10) {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+      }
+      return String(phone || '');
+    }
+
+    function getActiveDirectory() {
+      return participantDirectory.filter(person => person.role !== 'Abroad');
     }
 
     function getBaseReliability(member) {
@@ -1369,8 +1806,8 @@
     function getReliability(member) {
       const base = getBaseReliability(member);
       const avg = getCommunityAverageBaseReliability();
-      const relative = 0.65 + (base - avg) * 1.6;
-      return clamp(relative, 0.03, 0.99);
+      const relative = 0.65 + (base - avg) * 1.7;
+      return clamp(relative, 0.02, 0.99);
     }
 
     function getStatusLabel(reliability) {
@@ -1391,16 +1828,29 @@
       return `${(decimal * 100).toFixed(1)}%`;
     }
 
+    function createHistoryEntry(html, type = 'system', meetingData = null) {
+      const hasCrypto = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function';
+      return {
+        id: hasCrypto ? crypto.randomUUID() : `entry-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        type,
+        html,
+        timestamp: new Date().toLocaleString(),
+        meetingData
+      };
+    }
+
     function saveState() {
       localStorage.setItem('coffeeYapMembers', JSON.stringify(members));
       localStorage.setItem('coffeeYapHistory', JSON.stringify(meetingHistory));
       localStorage.setItem('coffeeYapWeek', String(currentWeek));
+      localStorage.setItem('coffeeYapCurrentPage', currentPage);
     }
 
     function loadState() {
       const savedMembers = localStorage.getItem('coffeeYapMembers');
       const savedHistory = localStorage.getItem('coffeeYapHistory');
       const savedWeek = localStorage.getItem('coffeeYapWeek');
+      const savedPage = localStorage.getItem('coffeeYapCurrentPage');
 
       if (savedMembers) {
         members = JSON.parse(savedMembers).map(member => ({
@@ -1418,6 +1868,10 @@
       if (savedWeek) {
         currentWeek = Number(savedWeek) || 1;
       }
+
+      if (savedPage) {
+        currentPage = savedPage;
+      }
     }
 
     function findMemberById(id) {
@@ -1426,9 +1880,9 @@
 
     function renderWeek() {
       const weekEl = document.getElementById('weekValue');
-      if (weekEl) {
-        weekEl.textContent = `Week ${currentWeek}`;
-      }
+      const pairingWeekStat = document.getElementById('pairingWeekStat');
+      if (weekEl) weekEl.textContent = `Week ${currentWeek}`;
+      if (pairingWeekStat) pairingWeekStat.textContent = `Week ${currentWeek}`;
     }
 
     function renderSelects() {
@@ -1538,16 +1992,168 @@
           ${item.timestamp ? `<span class="history-timestamp">${item.timestamp}</span>` : ''}
           ${item.html}
           <div class="history-actions">
-            <button class="history-remove-btn ${adminVisible ? 'show' : ''}" data-id="${item.id}" type="button">Remove</button>
+            <button class="mini-btn danger history-remove-btn ${adminVisible ? 'show' : ''}" data-id="${item.id}" type="button">Remove</button>
           </div>
         </li>
       `).join('');
 
       document.querySelectorAll('.history-remove-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          removeHistoryEntry(button.dataset.id);
-        });
+        button.addEventListener('click', () => removeHistoryEntry(button.dataset.id));
       });
+    }
+
+    function getDirectoryRoles() {
+      return [...new Set(getActiveDirectory().map(person => person.role))].sort();
+    }
+
+    function renderDirectoryFilters() {
+      const roles = getDirectoryRoles();
+      const select = document.getElementById('directoryRoleFilter');
+      const current = directoryRoleFilter;
+      select.innerHTML = `<option value="all">All Roles</option>` +
+        roles.map(role => `<option value="${role}">${role}</option>`).join('');
+      select.value = roles.includes(current) || current === 'all' ? current : 'all';
+
+      document.getElementById('directoryCountStat').textContent = `${getActiveDirectory().length} Active Participants`;
+      document.getElementById('directoryRoleStat').textContent = `${roles.length} Roles`;
+    }
+
+    function renderDirectory() {
+      const grid = document.getElementById('directoryGrid');
+      const term = directorySearchTerm.trim().toLowerCase();
+
+      const filtered = getActiveDirectory().filter(person => {
+        const matchesRole = directoryRoleFilter === 'all' || person.role === directoryRoleFilter;
+        const haystack = [
+          person.name,
+          person.role,
+          person.phone,
+          person.email,
+          person.major
+        ].join(' ').toLowerCase();
+
+        return matchesRole && (term === '' || haystack.includes(term));
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No active participants match your search.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(person => `
+        <div class="person-card">
+          <div class="person-top">
+            <div>
+              <div class="person-name">${person.name}</div>
+              <div class="person-major">${person.major || '—'}</div>
+            </div>
+            <span class="role-badge">${person.role}</span>
+          </div>
+
+          <div class="person-details">
+            <div class="detail-row"><span class="detail-label">Phone</span>${formatPhone(person.phone)}</div>
+            <div class="detail-row"><span class="detail-label">Email</span>${person.email || '—'}</div>
+            <div class="detail-row"><span class="detail-label">Birthday</span>${person.birthday || '—'}</div>
+          </div>
+
+          <div class="person-actions">
+            <button class="mini-btn" type="button" onclick="copyToClipboard('${normalizePhone(person.phone)}', 'Phone copied for ${person.name}.')">Copy Phone</button>
+            <button class="mini-btn secondary" type="button" onclick="copyToClipboard('${person.email || ''}', 'Email copied for ${person.name}.')">Copy Email</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function hashStringToInt(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+      }
+      return hash || 1;
+    }
+
+    function seededRandom(seed) {
+      let state = seed % 2147483647;
+      if (state <= 0) state += 2147483646;
+      return function() {
+        state = state * 16807 % 2147483647;
+        return (state - 1) / 2147483646;
+      };
+    }
+
+    function shuffleWithSeed(array, seedStr) {
+      const arr = [...array];
+      const rand = seededRandom(hashStringToInt(seedStr));
+
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+
+      return arr;
+    }
+
+    function getCurrentPairings() {
+      const activeParticipants = getActiveDirectory()
+        .filter(person => person.role !== 'Abroad')
+        .map(person => ({ ...person }));
+
+      const shuffled = shuffleWithSeed(activeParticipants, `coffee-yap-week-${currentWeek}`);
+      const result = [];
+
+      let i = 0;
+      while (i < shuffled.length) {
+        const remaining = shuffled.length - i;
+        if (remaining === 3) {
+          result.push(shuffled.slice(i, i + 3));
+          i += 3;
+        } else {
+          result.push(shuffled.slice(i, i + 2));
+          i += 2;
+        }
+      }
+
+      return result;
+    }
+
+    function renderPairings() {
+      const grid = document.getElementById('pairingsGrid');
+      const pairings = getCurrentPairings();
+
+      document.getElementById('pairingCountStat').textContent = `${pairings.length} Groups`;
+
+      if (pairings.length === 0) {
+        grid.innerHTML = `<div class="pairings-empty" style="grid-column:1 / -1;">No active pairings available.</div>`;
+        return;
+      }
+
+      grid.innerHTML = pairings.map((group, idx) => {
+        const label = group.length === 2 ? 'Pair' : 'Trio';
+
+        return `
+          <div class="pairing-card">
+            <div class="pairing-number">${label} ${idx + 1}</div>
+            <div class="pairing-members">
+              ${group.map(person => `
+                <div class="pair-member">
+                  <div class="pair-member-name">${person.name}</div>
+                  <div class="pair-member-meta">${person.role} · ${formatPhone(person.phone)}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="pairing-footer">
+              <span class="pair-badge">${group.length === 2 ? '2 Person Match' : '3 Person Match'}</span>
+              <button
+                class="mini-btn secondary"
+                type="button"
+                onclick="copyToClipboard('${group.map(p => `${p.name} — ${formatPhone(p.phone)}`).join('\\n')}', 'Pairing copied.')"
+              >
+                Copy Group
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function rerenderAll() {
@@ -1555,6 +2161,10 @@
       renderHeroStats();
       renderLeaderboard();
       renderHistory();
+      renderDirectoryFilters();
+      renderDirectory();
+      renderPairings();
+      updatePageVisibility();
     }
 
     function setMessage(message, type = 'default') {
@@ -1565,13 +2175,13 @@
       if (type === 'error') box.classList.add('error');
     }
 
-    function createHistoryEntry(html, type = 'system') {
-      return {
-        id: crypto.randomUUID(),
-        type,
-        html,
-        timestamp: new Date().toLocaleString()
-      };
+    async function copyToClipboard(text, successMessage = 'Copied to clipboard.') {
+      try {
+        await navigator.clipboard.writeText(String(text || ''));
+        setMessage(successMessage, 'success');
+      } catch (error) {
+        setMessage('Could not copy to clipboard.', 'error');
+      }
     }
 
     function resetUploadUI() {
@@ -1621,11 +2231,11 @@
       members.forEach(member => {
         if (member.lastMeetingWeek < previousWeek) {
           const missedWeeks = getMissedWeeks(member, previousWeek);
-          const assignedPenalty = WEEKLY_DECAY_ASSIGNED + Math.max(0, missedWeeks - 1);
-          const ratingPenalty = WEEKLY_DECAY_RATING + Math.max(0, missedWeeks - 1) * 6;
+          const assignedPenalty = WEEKLY_DECAY_ASSIGNED + Math.max(0, missedWeeks - 1) * 2;
+          const ratingPenalty = WEEKLY_DECAY_RATING + Math.max(0, missedWeeks - 1) * 9;
 
           member.assignedMeetings += assignedPenalty;
-          member.rating = Math.max(700, member.rating - ratingPenalty);
+          member.rating = Math.max(650, member.rating - ratingPenalty);
 
           decayedCount += 1;
           decaySummaries.push(`${member.name} (-${ratingPenalty} score, +${assignedPenalty} expected)`);
@@ -1639,11 +2249,12 @@
         <strong>Week advanced:</strong> Coffee Yap is now in <strong>Week ${currentWeek}</strong>.
         <br/>Weekly inactivity decay applied to <strong>${decayedCount}</strong> members.
         ${decayedCount > 0 ? `<br/><br/>${preview}${extra}` : '<br/>No inactivity decay was applied this week.'}
+        <br/><br/><strong>New pairings are now live for Week ${currentWeek}.</strong>
       `, 'week'));
 
       rerenderAll();
       saveState();
-      setMessage(`Moved to Week ${currentWeek}. Inactivity decay was strengthened and applied.`, 'success');
+      setMessage(`Moved to Week ${currentWeek}. New pairings generated and stronger inactivity decay applied.`, 'success');
     }
 
     function goBackWeek() {
@@ -1655,12 +2266,13 @@
       currentWeek -= 1;
       meetingHistory.push(createHistoryEntry(`
         <strong>Week adjusted:</strong> Coffee Yap was moved back to <strong>Week ${currentWeek}</strong>.
+        <br/>Pairings were recalculated for the new week view.
         <br/>No decay was reversed automatically.
       `, 'week'));
 
       rerenderAll();
       saveState();
-      setMessage(`Moved back to Week ${currentWeek}.`, 'success');
+      setMessage(`Moved back to Week ${currentWeek}. Pairings refreshed for that week.`, 'success');
     }
 
     function recordCompletedMeeting(memberAId, memberBId) {
@@ -1719,7 +2331,14 @@
           <br/>${photoHTML}
         `;
 
-        meetingHistory.push(createHistoryEntry(eventText, 'meeting'));
+        meetingHistory.push(createHistoryEntry(eventText, 'meeting', {
+          memberAId: memberA.id,
+          memberBId: memberB.id,
+          gainA,
+          gainB,
+          week: currentWeek
+        }));
+
         rerenderAll();
         saveState();
         resetUploadUI();
@@ -1740,8 +2359,13 @@
       if (!confirmed) return;
 
       searchTerm = '';
+      directorySearchTerm = '';
+      directoryRoleFilter = 'all';
       resetUploadUI();
       document.getElementById('searchInput').value = '';
+      document.getElementById('directorySearch').value = '';
+      document.getElementById('directoryRoleFilter').value = 'all';
+
       initializeMembers();
       renderSelects();
       rerenderAll();
@@ -1784,6 +2408,44 @@
       document.getElementById('adminPanel').classList.remove('show');
       setMessage('Admin mode hidden.', 'success');
       renderHistory();
+    }
+
+    function switchPage(pageId) {
+      currentPage = pageId;
+      updatePageVisibility();
+      saveState();
+    }
+
+    function updatePageVisibility() {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.toggle('active', page.id === currentPage);
+      });
+
+      document.querySelectorAll('.nav-link[data-page]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === currentPage);
+      });
+    }
+
+    function copyAllPhones() {
+      const term = directorySearchTerm.trim().toLowerCase();
+      const filtered = getActiveDirectory().filter(person => {
+        const matchesRole = directoryRoleFilter === 'all' || person.role === directoryRoleFilter;
+        const haystack = [person.name, person.role, person.phone, person.email, person.major].join(' ').toLowerCase();
+        return matchesRole && (term === '' || haystack.includes(term));
+      });
+
+      const text = filtered.map(person => `${person.name}: ${formatPhone(person.phone)}`).join('\n');
+      copyToClipboard(text, 'Active participant phone list copied.');
+    }
+
+    function copyAllPairings() {
+      const text = getCurrentPairings().map((group, idx) => {
+        const header = group.length === 2 ? `Pair ${idx + 1}` : `Trio ${idx + 1}`;
+        const lines = group.map(person => `- ${person.name} (${formatPhone(person.phone)})`);
+        return `${header}\n${lines.join('\n')}`;
+      }).join('\n\n');
+
+      copyToClipboard(text, `Week ${currentWeek} pairings copied.`);
     }
 
     document.getElementById('uploadSection').addEventListener('click', () => {
@@ -1848,6 +2510,27 @@
       renderLeaderboard();
     });
 
+    document.getElementById('directorySearch').addEventListener('input', (e) => {
+      directorySearchTerm = e.target.value;
+      renderDirectory();
+    });
+
+    document.getElementById('directoryRoleFilter').addEventListener('change', (e) => {
+      directoryRoleFilter = e.target.value;
+      renderDirectory();
+    });
+
+    document.getElementById('copyAllPhonesBtn').addEventListener('click', copyAllPhones);
+    document.getElementById('copyPairingsBtn').addEventListener('click', copyAllPairings);
+    document.getElementById('refreshPairingsBtn').addEventListener('click', () => {
+      renderPairings();
+      setMessage(`Week ${currentWeek} pairings refreshed.`, 'success');
+    });
+
+    document.querySelectorAll('.nav-link[data-page]').forEach(button => {
+      button.addEventListener('click', () => switchPage(button.dataset.page));
+    });
+
     document.getElementById('adminLoginBtn').addEventListener('click', enterAdminMode);
     document.getElementById('exitAdminBtn').addEventListener('click', exitAdminMode);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
@@ -1855,6 +2538,8 @@
     loadState();
     renderSelects();
     rerenderAll();
+
+    window.copyToClipboard = copyToClipboard;
   </script>
 </body>
 </html>
