@@ -3,360 +3,780 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Donut Bot Leaderboard</title>
+  <title>Coffee Yap - Building Community Through Connection</title>
   <style>
-    :root {
-      --bg: #f4f7ee;
-      --panel: #dce9c3;
-      --panel-2: #edf4df;
-      --accent: #5f8612;
-      --accent-dark: #45650c;
-      --text: #111111;
-      --muted: #4d4d4d;
-      --border: rgba(17, 17, 17, 0.12);
-      --shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-      --radius-xl: 32px;
-      --radius-lg: 18px;
-    }
-
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
 
     body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #eef5e3 0%, #f9fbf4 100%);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #f8f9f5;
+      color: #1a1a1a;
+      line-height: 1.6;
     }
 
     .navbar {
-      background: #d6e6b8;
-      padding: 20px 36px;
+      background: linear-gradient(135deg, #c8ddc0 0%, #d9e7d3 100%);
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
+      border-bottom: 1px solid rgba(90, 122, 77, 0.15);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(90, 122, 77, 0.08);
     }
 
-    .brand {
+    .logo-section {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: 0.02em;
+      gap: 16px;
     }
 
-    .brand-badge {
-      width: 42px;
-      height: 42px;
+    .logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #5a7a4d 0%, #4a6a3d 100%);
       border-radius: 50%;
-      background: var(--accent);
-      color: white;
       display: grid;
       place-items: center;
-      font-size: 1.2rem;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      font-weight: 700;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .nav-links span {
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .nav-button {
-      border: none;
-      background: var(--accent);
+      font-size: 26px;
       color: white;
-      padding: 14px 24px;
-      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(90, 122, 77, 0.3);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #2a3a24;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: #5a7a4d;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 14px;
       font-weight: 700;
+      color: #2a3a24;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    .page {
-      max-width: 1320px;
-      margin: 42px auto;
-      padding: 0 28px 48px;
+    .nav-link:hover {
+      color: #5a7a4d;
     }
 
-    .hero {
-      background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
-      border-radius: 40px;
-      padding: 42px;
-      box-shadow: var(--shadow);
+    .cta-button {
+      background: linear-gradient(135deg, #5a7a4d 0%, #4a6a3d 100%);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 24px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(90, 122, 77, 0.25);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(90, 122, 77, 0.35);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #c8ddc0 0%, #d9e7d3 100%);
+      padding: 80px 40px 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(90, 122, 77, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 1280px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 28px;
-      align-items: stretch;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
     }
 
-    .eyebrow {
-      font-size: 0.9rem;
+    .hero-text h1 {
+      font-size: 68px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: #2a3a24;
+      margin-bottom: 20px;
+      letter-spacing: -0.03em;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      font-weight: 800;
+      color: #5a7a4d;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 24px;
+      display: inline-block;
+      padding: 8px 18px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      border: 1px solid rgba(90, 122, 77, 0.2);
+    }
+
+    .hero-description {
+      font-size: 19px;
+      line-height: 1.65;
+      color: #2a3a24;
+      margin-bottom: 28px;
+    }
+
+    .hero-description strong {
+      font-weight: 800;
+      color: #4a6a3d;
+    }
+
+    .purpose-highlight {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 24px;
+      border-radius: 16px;
+      border: 2px solid rgba(90, 122, 77, 0.15);
+      margin-top: 24px;
+    }
+
+    .purpose-title {
+      font-size: 14px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--accent-dark);
-      margin-bottom: 14px;
+      color: #5a7a4d;
+      margin-bottom: 12px;
     }
 
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(2.8rem, 5vw, 5rem);
-      line-height: 0.95;
-      font-weight: 900;
-      letter-spacing: -0.04em;
+    .purpose-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #2a3a24;
     }
 
-    .hero p {
-      max-width: 720px;
-      font-size: 1.35rem;
-      line-height: 1.45;
-      color: #222;
-      margin-top: 26px;
-      margin-bottom: 0;
-    }
-
-    .hero strong {
-      font-weight: 900;
-    }
-
-    .stats {
+    .hero-stats {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      align-self: center;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      animation: slideIn 1s ease;
     }
 
-    .stat-card {
-      background: rgba(255, 255, 255, 0.65);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      border-radius: 24px;
-      padding: 22px;
-      min-height: 128px;
+    .stat-box {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 28px;
+      border-radius: 16px;
+      border: 2px solid rgba(90, 122, 77, 0.12);
+      transition: all 0.3s;
+      cursor: default;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(90, 122, 77, 0.15);
+      border-color: rgba(90, 122, 77, 0.25);
     }
 
     .stat-label {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: 12px;
       font-weight: 800;
-      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b8a5e;
+      margin-bottom: 10px;
     }
 
     .stat-value {
-      margin-top: 12px;
-      font-size: 2rem;
+      font-size: 36px;
       font-weight: 900;
+      color: #2a3a24;
+      line-height: 1;
     }
 
-    .section-grid {
+    .stat-description {
+      font-size: 13px;
+      color: #5a7a4d;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .wave-divider {
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: #f8f9f5;
+      clip-path: ellipse(100% 100% at 50% 100%);
+    }
+
+    .main-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .engagement-banner {
+      background: linear-gradient(135deg, #5a7a4d 0%, #4a6a3d 100%);
+      color: white;
+      padding: 48px;
+      border-radius: 20px;
+      margin-bottom: 60px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(90, 122, 77, 0.25);
+    }
+
+    .engagement-banner h2 {
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .engagement-banner p {
+      font-size: 18px;
+      line-height: 1.6;
+      opacity: 0.95;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 48px;
+      font-weight: 900;
+      color: #2a3a24;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-description {
+      font-size: 18px;
+      color: #5a7a4d;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 48px;
+      line-height: 1.65;
+      font-weight: 500;
+    }
+
+    .content-grid {
       display: grid;
-      grid-template-columns: 1.35fr 0.95fr;
-      gap: 28px;
-      margin-top: 28px;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
     }
 
     .card {
       background: white;
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(90, 122, 77, 0.08);
       overflow: hidden;
+      border: 2px solid rgba(90, 122, 77, 0.08);
+      transition: all 0.3s;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 36px rgba(90, 122, 77, 0.12);
+      border-color: rgba(90, 122, 77, 0.15);
     }
 
     .card-header {
-      padding: 28px 30px 12px;
+      padding: 36px 36px 24px;
+      border-bottom: 2px solid #f0f3ed;
+      background: linear-gradient(180deg, rgba(200, 221, 192, 0.15) 0%, transparent 100%);
     }
 
     .card-title {
-      margin: 0;
-      font-size: 2rem;
+      font-size: 30px;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      color: #2a3a24;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
     }
 
     .card-subtitle {
-      margin-top: 10px;
-      color: var(--muted);
-      line-height: 1.45;
-      font-size: 1rem;
+      font-size: 15px;
+      color: #6b8a5e;
+      line-height: 1.6;
+      font-weight: 500;
     }
 
-    .table-wrap {
-      padding: 0 20px 24px;
+    .search-container {
+      padding: 24px 36px;
+      border-bottom: 2px solid #f0f3ed;
+      background: #fafbf8;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 18px 14px 46px;
+      border: 2px solid #e1e8dc;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235a7a4d" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat 16px center;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #5a7a4d;
+      box-shadow: 0 0 0 4px rgba(90, 122, 77, 0.08);
+    }
+
+    .table-container {
       overflow-x: auto;
+      padding: 0 28px 28px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 760px;
-    }
-
-    th, td {
-      padding: 18px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      font-size: 1rem;
+      min-width: 850px;
     }
 
     th {
-      font-size: 0.92rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      font-weight: 800;
-    }
-
-    td.rank-cell {
+      text-align: left;
+      padding: 18px 14px;
+      font-size: 12px;
       font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b8a5e;
+      border-bottom: 3px solid #e8ede4;
+      background: #fafbf8;
+    }
+
+    td {
+      padding: 22px 14px;
+      border-bottom: 1px solid #f0f3ed;
+      font-size: 15px;
+    }
+
+    tbody tr {
+      transition: all 0.2s;
+      animation: slideIn 0.4s ease;
+    }
+
+    tbody tr:hover {
+      background: #f9faf7;
+      transform: translateX(4px);
+    }
+
+    .rank-cell {
+      font-weight: 900;
+      font-size: 17px;
       width: 90px;
+      color: #2a3a24;
     }
 
-    td.rating-cell {
-      font-weight: 800;
+    .name-cell {
+      font-weight: 700;
+      color: #2a3a24;
     }
 
-    .pill {
+    .rating-cell {
+      font-weight: 900;
+      color: #5a7a4d;
+      font-size: 19px;
+    }
+
+    .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      background: #eef5e3;
-      color: var(--accent-dark);
-    }
-
-    .trophy {
-      font-size: 1rem;
-    }
-
-    .form-card {
-      padding: 28px;
-    }
-
-    .form-grid {
-      display: grid;
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .field {
-      display: grid;
-      gap: 8px;
-    }
-
-    label {
-      font-size: 0.95rem;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
       font-weight: 800;
-      color: #222;
+      background: linear-gradient(135deg, #e8f0e4 0%, #f0f5ec 100%);
+      color: #4a6a3d;
+      border: 1px solid #d4e5cd;
     }
 
-    select, input {
+    .status-icon {
+      font-size: 14px;
+    }
+
+    .form-section {
+      padding: 36px;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #2a3a24;
+      margin-bottom: 10px;
+    }
+
+    select {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(0, 0, 0, 0.16);
-      font-size: 1rem;
+      padding: 16px 18px;
+      border: 2px solid #e1e8dc;
+      border-radius: 12px;
+      font-size: 15px;
       background: white;
+      font-weight: 600;
+      transition: all 0.2s;
+      color: #2a3a24;
     }
 
-    .button-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    select:focus {
+      outline: none;
+      border-color: #5a7a4d;
+      box-shadow: 0 0 0 4px rgba(90, 122, 77, 0.08);
+    }
+
+    .upload-section {
       margin-top: 8px;
-    }
-
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      font-size: 1rem;
-      font-weight: 800;
+      padding: 24px;
+      background: #fafbf8;
+      border: 2px dashed #d4e5cd;
+      border-radius: 12px;
+      text-align: center;
+      transition: all 0.3s;
       cursor: pointer;
     }
 
-    .primary {
-      background: var(--accent);
+    .upload-section:hover {
+      border-color: #5a7a4d;
+      background: #f5f7f2;
+    }
+
+    .upload-section.has-file {
+      border-style: solid;
+      background: #e8f0e4;
+      border-color: #5a7a4d;
+    }
+
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: #5a7a4d;
+      font-weight: 600;
+    }
+
+    .upload-subtext {
+      font-size: 12px;
+      color: #6b8a5e;
+      margin-top: 4px;
+    }
+
+    .file-preview {
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e1e8dc;
+    }
+
+    .file-preview.show {
+      display: flex;
+    }
+
+    .file-preview-icon {
+      font-size: 24px;
+    }
+
+    .file-preview-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2a3a24;
+    }
+
+    .file-remove {
+      background: #f0f3ed;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5a7a4d;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #5a7a4d 0%, #4a6a3d 100%);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(90, 122, 77, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(90, 122, 77, 0.35);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #5a7a4d;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 2px solid #5a7a4d;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #5a7a4d;
       color: white;
     }
 
-    .secondary {
-      background: #edf2e4;
-      color: #203008;
+    .message-box {
+      margin-top: 24px;
+      padding: 18px 20px;
+      background: #e8f0e4;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #2a3a24;
+      border-left: 4px solid #5a7a4d;
+      font-weight: 600;
     }
 
-    .note {
-      margin-top: 16px;
-      padding: 14px 16px;
-      background: #f5f8ef;
-      border: 1px solid rgba(95, 134, 18, 0.14);
-      border-radius: 14px;
-      color: #31460f;
-      line-height: 1.45;
-      font-size: 0.96rem;
+    .message-box.success {
+      background: #d4f4dd;
+      border-left-color: #4a9d5f;
+      color: #1a5a2a;
     }
 
-    .formula-box {
-      margin-top: 22px;
-      padding: 18px;
-      border-radius: 18px;
-      background: #f7f9f3;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      font-size: 0.97rem;
-      line-height: 1.55;
+    .message-box.error {
+      background: #ffe8e8;
+      border-left-color: #d94a4a;
+      color: #7a1a1a;
     }
 
-    .formula-box code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.93rem;
-      font-weight: 700;
+    .info-section {
+      margin-top: 28px;
+      padding: 28px;
+      background: linear-gradient(135deg, #fafbf8 0%, #f5f7f2 100%);
+      border-radius: 16px;
+      border: 2px solid #e8ede4;
+    }
+
+    .info-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #2a3a24;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .info-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #4a5a44;
+    }
+
+    .info-text strong {
+      font-weight: 800;
+      color: #2a3a24;
+    }
+
+    .history-section {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(90, 122, 77, 0.08);
+      overflow: hidden;
+      border: 2px solid rgba(90, 122, 77, 0.08);
+      margin-bottom: 40px;
     }
 
     .history-list {
       list-style: none;
+      padding: 0;
       margin: 0;
-      padding: 0 28px 28px;
     }
 
     .history-item {
-      border-top: 1px solid var(--border);
-      padding: 18px 0;
-      line-height: 1.45;
+      padding: 28px 36px;
+      border-bottom: 1px solid #f0f3ed;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #2a3a24;
+      transition: all 0.2s;
+      animation: slideIn 0.4s ease;
+    }
+
+    .history-item:hover {
+      background: #fafbf8;
+      padding-left: 44px;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
     }
 
     .history-item strong {
       font-weight: 900;
+      color: #4a6a3d;
     }
 
-    .muted {
-      color: var(--muted);
+    .history-photo {
+      margin-top: 12px;
+      max-width: 200px;
+      border-radius: 8px;
+      border: 2px solid #e8ede4;
     }
 
-    @media (max-width: 1000px) {
-      .hero,
-      .section-grid {
+    .impact-section {
+      background: linear-gradient(135deg, rgba(200, 221, 192, 0.3) 0%, rgba(217, 231, 211, 0.3) 100%);
+      padding: 60px 40px;
+      border-radius: 24px;
+      margin-bottom: 60px;
+      border: 2px solid rgba(90, 122, 77, 0.1);
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .impact-card {
+      text-align: center;
+      padding: 32px 24px;
+      background: white;
+      border-radius: 16px;
+      border: 2px solid rgba(90, 122, 77, 0.12);
+      transition: all 0.3s;
+    }
+
+    .impact-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px rgba(90, 122, 77, 0.15);
+    }
+
+    .impact-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .impact-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #2a3a24;
+      margin-bottom: 8px;
+    }
+
+    .impact-text {
+      font-size: 14px;
+      color: #5a7a4d;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-content,
+      .content-grid {
         grid-template-columns: 1fr;
       }
 
-      .nav-links {
+      .nav-menu {
         display: none;
+      }
+
+      .impact-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -365,77 +785,131 @@
         padding: 18px 20px;
       }
 
-      .page {
-        padding: 0 16px 32px;
+      .hero-section {
+        padding: 48px 20px 80px;
       }
 
-      .hero {
-        padding: 24px;
-        border-radius: 28px;
+      .hero-text h1 {
+        font-size: 40px;
       }
 
-      .stats {
+      .hero-stats {
         grid-template-columns: 1fr;
       }
 
-      .card-header,
-      .form-card,
-      .history-list {
-        padding-left: 20px;
-        padding-right: 20px;
+      .main-content {
+        padding: 40px 20px;
       }
 
-      .table-wrap {
-        padding-left: 12px;
-        padding-right: 12px;
+      .section-title {
+        font-size: 32px;
+      }
+
+      .card-header,
+      .form-section,
+      .history-item {
+        padding: 24px 20px;
+      }
+
+      .search-container {
+        padding: 20px;
+      }
+
+      .table-container {
+        padding: 0 12px 20px;
+      }
+
+      .engagement-banner {
+        padding: 32px 24px;
+      }
+
+      .engagement-banner h2 {
+        font-size: 28px;
       }
     }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="brand">
-      <div class="brand-badge">🍩</div>
-      <div>Donut Meeting Leaderboard</div>
+    <div class="logo-section">
+      <div class="logo">☕</div>
+      <div>
+        <div class="brand-name">COFFEE YAP</div>
+        <div class="brand-tagline">Building Community</div>
+      </div>
     </div>
-    <div class="nav-links">
-      <span>Leaderboard</span>
-      <span>Report Meeting</span>
-      <span>Scoring Logic</span>
+    <div class="nav-menu">
+      <span class="nav-link">Leaderboard</span>
+      <span class="nav-link">Report Meeting</span>
+      <span class="nav-link">Our Purpose</span>
     </div>
-    <button class="nav-button" id="resetTopBtn">Reset Demo</button>
+    <button class="cta-button" id="resetTopBtn">Reset Demo</button>
   </nav>
 
-  <main class="page">
-    <section class="hero">
-      <div>
-        <div class="eyebrow">Weekly Social Momentum</div>
-        <h1>BOOST RELIABLE CONNECTIONS</h1>
-        <p>
-          Every confirmed donut meeting raises <strong>both</strong> members' scores.
-          The reward is <strong>bigger</strong> when you follow through with someone who
-          does not usually complete meetings.
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-subtitle">Connection Tracking System</div>
+        <h1>FOSTERING MEANINGFUL RELATIONSHIPS</h1>
+        <p class="hero-description">
+          Coffee Yap transforms casual coffee chats into <strong>intentional community building</strong>. 
+          Every meeting strengthens bonds, creates opportunities for collaboration, and builds a 
+          <strong>culture of reliability</strong> and <strong>mutual support</strong> within our organization.
         </p>
-      </div>
-      <div class="stats" id="stats"></div>
-    </section>
-
-    <section class="section-grid">
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">Leaderboard</h2>
-          <div class="card-subtitle">
-            Reliability starts from a benchmark instead of a long history, so the system works
-            even when your group has only done a few meetings so far.
+        <div class="purpose-highlight">
+          <div class="purpose-title">Our Mission</div>
+          <div class="purpose-text">
+            To create a thriving community where every member feels connected, supported, and engaged. 
+            By tracking and celebrating consistent participation, we ensure everyone has meaningful 
+            connections and nobody feels left behind.
           </div>
         </div>
-        <div class="table-wrap">
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+    <div class="wave-divider"></div>
+  </section>
+
+  <main class="main-content">
+    <div class="engagement-banner">
+      <h2>WHY CONNECTION MATTERS</h2>
+      <p>
+        Strong communities are built on consistent, meaningful interactions. Coffee Yap helps track 
+        engagement, recognize active members, and identify opportunities to strengthen relationships. 
+        Together, we're creating an inclusive environment where everyone thrives.
+      </p>
+    </div>
+
+    <h2 class="section-title">COMMUNITY LEADERBOARD</h2>
+    <p class="section-description">
+      Recognizing members who actively invest in building relationships and strengthening our community 
+      through consistent engagement and follow-through.
+    </p>
+
+    <div class="content-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Current Rankings</h3>
+          <p class="card-subtitle">
+            Members ranked by engagement activity, reliability, and contribution to community building
+          </p>
+        </div>
+        <div class="search-container">
+          <input 
+            type="text" 
+            class="search-input" 
+            id="searchInput" 
+            placeholder="Search members by name..."
+            autocomplete="off"
+          />
+        </div>
+        <div class="table-container">
           <table>
             <thead>
               <tr>
                 <th>Rank</th>
                 <th>Member</th>
-                <th>Rating</th>
+                <th>Score</th>
                 <th>Reliability</th>
                 <th>Meetings</th>
                 <th>Status</th>
@@ -446,81 +920,97 @@
         </div>
       </div>
 
-      <div class="card form-card">
-        <h2 class="card-title">Report Meeting</h2>
-        <div class="card-subtitle">
-          Demo logic: choose two different people and submit one completed meeting.
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Report Meeting</h3>
+          <p class="card-subtitle">
+            Log a completed coffee yap meeting and upload a photo to celebrate the connection
+          </p>
         </div>
-
-        <div class="form-grid">
-          <div class="field">
-            <label for="memberA">Member A</label>
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label" for="memberA">First Member</label>
             <select id="memberA"></select>
           </div>
 
-          <div class="field">
-            <label for="memberB">Member B</label>
+          <div class="form-group">
+            <label class="form-label" for="memberB">Second Member</label>
             <select id="memberB"></select>
           </div>
-        </div>
 
-        <div class="button-row">
-          <button class="primary" id="submitMeetingBtn">Submit Completed Meeting</button>
-          <button class="secondary" id="resetBtn">Reset Demo Data</button>
-        </div>
+          <div class="form-group">
+            <label class="form-label">Meeting Photo (Optional)</label>
+            <div class="upload-section" id="uploadSection">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Click to upload a photo</div>
+              <div class="upload-subtext">Capture the moment and celebrate your connection!</div>
+            </div>
+            <div class="file-preview" id="filePreview">
+              <span class="file-preview-icon">✓</span>
+              <span class="file-preview-name" id="fileName"></span>
+              <button class="file-remove" id="removeFile">Remove</button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" />
+          </div>
 
-        <div class="note" id="messageBox">
-          Submit a meeting to update the leaderboard.
-        </div>
+          <div class="button-group">
+            <button class="btn-primary" id="submitMeetingBtn">Submit Meeting</button>
+            <button class="btn-secondary" id="resetBtn">Reset Data</button>
+          </div>
 
-        <div class="formula-box">
-          <strong>Benchmark reliability:</strong> every member starts with a prior of
-          <code>4 completed out of 6 expected</code>, so initial reliability is
-          <code>4 / 6 = 0.667</code>.
-          <br /><br />
-          <strong>Displayed reliability:</strong>
-          <br />
-          <code>(benchmarkCompleted + completedMeetings) / (benchmarkExpected + assignedMeetings)</code>
-          <br /><br />
-          <strong>Meeting gain for A:</strong>
-          <br />
-          <code>gainA = round(BASE × (1 + ALPHA × (1 - reliabilityB)))</code>
-          <br />
-          with <code>BASE = 20</code> and <code>ALPHA = 0.75</code>.
-          <br /><br />
-          So meeting with someone less likely to complete meetings gives a larger boost.
+          <div class="message-box" id="messageBox">
+            Select two members and submit to record a meeting. Add a photo to make it memorable!
+          </div>
+
+          <div class="info-section">
+            <div class="info-title">The Power of Showing Up</div>
+            <div class="info-text">
+              Every meeting you complete strengthens the entire community. When you <strong>consistently 
+              show up</strong> for coffee chats, you're not just building your own network—you're helping 
+              create a <strong>culture of reliability</strong> that everyone benefits from. Members who 
+              engage with those who are less active help <strong>re-activate connections</strong> and ensure 
+              nobody feels isolated.
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="section-grid">
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">Recent Meeting Events</h2>
-          <div class="card-subtitle">Newest updates appear at the top.</div>
+    <div class="impact-section">
+      <h2 class="section-title" style="color: #2a3a24; margin-bottom: 48px;">OUR IMPACT</h2>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-icon">🤝</div>
+          <div class="impact-title">Stronger Bonds</div>
+          <div class="impact-text">
+            Regular coffee chats create lasting friendships and professional relationships
+          </div>
         </div>
-        <ul class="history-list" id="historyList"></ul>
-      </div>
-
-      <div class="card form-card">
-        <h2 class="card-title">Why the benchmark helps</h2>
-        <div class="card-subtitle">
-          Since your community has not done many meetings yet, pure completion rate would be too noisy.
+        <div class="impact-card">
+          <div class="impact-icon">💡</div>
+          <div class="impact-title">Better Collaboration</div>
+          <div class="impact-text">
+            Personal connections lead to more effective teamwork and knowledge sharing
+          </div>
         </div>
-        <div class="formula-box">
-          Instead of starting everybody at 0% or 100%, we use a <strong>neutral prior</strong>:
-          <br /><br />
-          <code>benchmarkCompleted = 4</code>
-          <br />
-          <code>benchmarkExpected = 6</code>
-          <br /><br />
-          That means everybody starts near <strong>66.7%</strong> reliability.
-          After more meetings, real behavior gradually matters more than the benchmark.
-          <br /><br />
-          This is basically a simple smoothing method, so early leaderboard movement feels fair.
+        <div class="impact-card">
+          <div class="impact-icon">🌱</div>
+          <div class="impact-title">Inclusive Culture</div>
+          <div class="impact-text">
+            Everyone feels valued, heard, and connected to the broader community
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <h2 class="section-title">RECENT CONNECTIONS</h2>
+    <p class="section-description">
+      Latest coffee yap meetings and the relationships being built across our community
+    </p>
+
+    <div class="history-section">
+      <ul class="history-list" id="historyList"></ul>
+    </div>
   </main>
 
   <script>
@@ -531,22 +1021,25 @@
     const BENCHMARK_EXPECTED = 6;
 
     const starterMembers = [
-      'Sammy',
-      'Kabir',
-      'Bubnack',
-      'Aaron',
-      'Sonny',
-      'JJ',
-      'Ramji',
-      'Aadi',
-      'Jasper',
-      'Joe',
-      'Gonya',
-      'Mallinger'
+      'Matthew McConnel', 'Ridwan Saleh', 'Henry Crabtree', 'Anya Reddy', 'Adya Kadam',
+      'Mitalee Pasricha', 'Tejasv Bhatia', 'Sophie Lu', 'Mateu Espinos', 'Adhya Kasamsetty',
+      'Dylan Westheimer', 'Risha Suvarna', 'Tara Valeti', 'Emma Li', 'Sriram Bhimaraju',
+      'Aidan James', 'Emanuel Simic', 'Clarissa Wing', 'Eve Weekes', 'Rohan Tirumala',
+      'Shinmu Jiang', 'Aanya Chakraborty', 'Audrey Mei Qi Moo', 'Daniel Harith', 'Nathan Leung',
+      'Kip\'a Junobi Ree', 'Shaya Sharifi', 'Tanya Wei', 'Adib Zafry', 'Melody Li',
+      'Emanuel Luo', 'Jason Li', 'Kaya Hoeberechts', 'Carol Xu', 'Vir Shah',
+      'Kate O\'Hara', 'Nina Zhu', 'Sriya Amati', 'Nicole Martinez', 'Catherine Phan',
+      'Hannah Shiohara', 'Ria Sudhir', 'Joseph Piccione', 'Rohan Tawade', 'Mia Farrar',
+      'Pasha Amirahmadi', 'Sophia Mistry', 'Kharisa Tamphanuwat', 'Abigail Daniyan', 'Misael Villalta',
+      'Samuel Fisher', 'Savannah Haile', 'Gia-Minh Vo', 'Ashley Madera', 'Shreya Bhatia',
+      'Ari Funk', 'Phillip Kim', 'Sakina Ganijee', 'Disha Ram', 'Nathaniel Seale',
+      'Preisha Agarwal', 'Srijay Vejendla', 'Jake Thiry', 'Jennifer Liu'
     ];
 
     let members = [];
     let meetingHistory = [];
+    let searchTerm = '';
+    let currentFile = null;
 
     function initializeMembers() {
       members = starterMembers.map((name, index) => ({
@@ -558,7 +1051,7 @@
       }));
 
       meetingHistory = [
-        'System ready. Everyone begins with benchmark reliability 66.7% and rating 1000.'
+        'System initialized. All members start with baseline engagement score. Let\'s build connections!'
       ];
     }
 
@@ -568,10 +1061,17 @@
     }
 
     function getStatusLabel(reliability) {
-      if (reliability >= 0.8) return 'Highly reliable';
+      if (reliability >= 0.8) return 'Highly Active';
       if (reliability >= 0.65) return 'Consistent';
-      if (reliability >= 0.5) return 'Mixed';
-      return 'Needs activation';
+      if (reliability >= 0.5) return 'Engaged';
+      return 'Growing';
+    }
+
+    function getStatusIcon(reliability) {
+      if (reliability >= 0.8) return '⭐';
+      if (reliability >= 0.65) return '✓';
+      if (reliability >= 0.5) return '●';
+      return '○';
     }
 
     function formatPercent(decimal) {
@@ -594,50 +1094,66 @@
       }
     }
 
-    function renderStats() {
+    function renderHeroStats() {
       const totalCompleted = members.reduce((sum, m) => sum + m.completedMeetings, 0);
       const avgReliability = members.reduce((sum, m) => sum + getReliability(m), 0) / members.length;
       const leader = [...members].sort((a, b) => b.rating - a.rating)[0];
-      const totalEvents = meetingHistory.length - 1;
+      const activeMembers = members.filter(m => getReliability(m) >= 0.65).length;
 
-      document.getElementById('stats').innerHTML = `
-        <div class="stat-card">
-          <div class="stat-label">Current Leader</div>
+      document.getElementById('heroStats').innerHTML = `
+        <div class="stat-box">
+          <div class="stat-label">Top Connector</div>
           <div class="stat-value">${leader.name}</div>
+          <div class="stat-description">Leading by example</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Top Rating</div>
+        <div class="stat-box">
+          <div class="stat-label">Highest Score</div>
           <div class="stat-value">${leader.rating}</div>
+          <div class="stat-description">Engagement points</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Avg Reliability</div>
+        <div class="stat-box">
+          <div class="stat-label">Avg Engagement</div>
           <div class="stat-value">${formatPercent(avgReliability)}</div>
+          <div class="stat-description">Community-wide</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Completed Meetings</div>
-          <div class="stat-value">${totalCompleted}</div>
+        <div class="stat-box">
+          <div class="stat-label">Active Members</div>
+          <div class="stat-value">${activeMembers}</div>
+          <div class="stat-description">Consistently engaged</div>
         </div>
       `;
     }
 
     function renderLeaderboard() {
-      const sorted = [...members].sort((a, b) => {
-        if (b.rating !== a.rating) return b.rating - a.rating;
-        return b.completedMeetings - a.completedMeetings;
-      });
+      const sorted = [...members]
+        .filter(member => 
+          searchTerm === '' || 
+          member.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+          if (b.rating !== a.rating) return b.rating - a.rating;
+          return b.completedMeetings - a.completedMeetings;
+        });
 
       const body = document.getElementById('leaderboardBody');
+      
+      if (sorted.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">No members found matching your search.</td></tr>';
+        return;
+      }
+
       body.innerHTML = sorted.map((member, index) => {
         const reliability = getReliability(member);
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '#';
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+        const statusIcon = getStatusIcon(reliability);
         return `
           <tr>
             <td class="rank-cell">${medal} ${index + 1}</td>
-            <td><strong>${member.name}</strong></td>
+            <td class="name-cell">${member.name}</td>
             <td class="rating-cell">${member.rating}</td>
             <td>${formatPercent(reliability)}</td>
             <td>${member.completedMeetings}</td>
-            <td><span class="pill"><span class="trophy">●</span>${getStatusLabel(reliability)}</span></td>
+            <td><span class="status-badge"><span class="status-icon">${statusIcon}</span>${getStatusLabel(reliability)}</span></td>
           </tr>
         `;
       }).join('');
@@ -645,19 +1161,30 @@
 
     function renderHistory() {
       const list = document.getElementById('historyList');
-      list.innerHTML = [...meetingHistory].reverse().map(item => `
+      const displayHistory = [...meetingHistory].reverse();
+      
+      if (displayHistory.length === 0) {
+        list.innerHTML = '<li class="history-item" style="color:#999;">No meetings recorded yet. Start building connections!</li>';
+        return;
+      }
+
+      list.innerHTML = displayHistory.map(item => `
         <li class="history-item">${item}</li>
       `).join('');
     }
 
     function rerenderAll() {
-      renderStats();
+      renderHeroStats();
       renderLeaderboard();
       renderHistory();
     }
 
-    function setMessage(message) {
-      document.getElementById('messageBox').textContent = message;
+    function setMessage(message, type = 'default') {
+      const box = document.getElementById('messageBox');
+      box.textContent = message;
+      box.className = 'message-box';
+      if (type === 'success') box.classList.add('success');
+      if (type === 'error') box.classList.add('error');
     }
 
     function findMemberById(id) {
@@ -669,12 +1196,12 @@
       const memberB = findMemberById(memberBId);
 
       if (!memberA || !memberB) {
-        setMessage('Could not find one of the selected members.');
+        setMessage('Could not find one of the selected members.', 'error');
         return;
       }
 
       if (memberA.id === memberB.id) {
-        setMessage('Choose two different members.');
+        setMessage('Please select two different members.', 'error');
         return;
       }
 
@@ -695,24 +1222,76 @@
       const updatedReliabilityA = getReliability(memberA);
       const updatedReliabilityB = getReliability(memberB);
 
-      const eventText = `
-        <strong>${memberA.name}</strong> and <strong>${memberB.name}</strong> completed a donut meeting.
-        ${memberA.name} gained <strong>+${gainA}</strong> and is now at <strong>${memberA.rating}</strong>
-        (${formatPercent(updatedReliabilityA)} reliability). ${memberB.name} gained <strong>+${gainB}</strong>
-        and is now at <strong>${memberB.rating}</strong> (${formatPercent(updatedReliabilityB)} reliability).
-      `;
+      let photoHTML = '';
+      if (currentFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const photoSrc = e.target.result;
+          const photoHTML = `<br/><img src="${photoSrc}" class="history-photo" alt="Meeting photo" />`;
+          const eventText = `
+            <strong>${memberA.name}</strong> and <strong>${memberB.name}</strong> connected over coffee! 🎉
+            ${memberA.name} gained <strong>+${gainA} points</strong> (now ${memberA.rating}, ${formatPercent(updatedReliabilityA)} reliability).
+            ${memberB.name} gained <strong>+${gainB} points</strong> (now ${memberB.rating}, ${formatPercent(updatedReliabilityB)} reliability).
+            ${photoHTML}
+          `;
+          meetingHistory.push(eventText);
+          rerenderAll();
+        };
+        reader.readAsDataURL(currentFile);
+      } else {
+        const eventText = `
+          <strong>${memberA.name}</strong> and <strong>${memberB.name}</strong> connected over coffee! 🎉
+          ${memberA.name} gained <strong>+${gainA} points</strong> (now ${memberA.rating}, ${formatPercent(updatedReliabilityA)} reliability).
+          ${memberB.name} gained <strong>+${gainB} points</strong> (now ${memberB.rating}, ${formatPercent(updatedReliabilityB)} reliability).
+        `;
+        meetingHistory.push(eventText);
+        rerenderAll();
+      }
 
-      meetingHistory.push(eventText);
-      setMessage(`${memberA.name} and ${memberB.name} were updated successfully.`);
-      rerenderAll();
+      setMessage(`Great connection! ${memberA.name} and ${memberB.name}'s meeting has been recorded. Keep building relationships! 🌟`, 'success');
+      
+      // Reset file upload
+      currentFile = null;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('uploadSection').classList.remove('has-file');
+      document.getElementById('filePreview').classList.remove('show');
     }
 
     function resetDemo() {
+      searchTerm = '';
+      currentFile = null;
+      document.getElementById('searchInput').value = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('uploadSection').classList.remove('has-file');
+      document.getElementById('filePreview').classList.remove('show');
       initializeMembers();
       renderSelects();
       rerenderAll();
-      setMessage('Demo data reset. Everyone is back to the benchmark start.');
+      setMessage('Demo data reset. Ready to start tracking connections again!', 'success');
     }
+
+    // File upload handlers
+    document.getElementById('uploadSection').addEventListener('click', () => {
+      document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        currentFile = file;
+        document.getElementById('uploadSection').classList.add('has-file');
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('filePreview').classList.add('show');
+      }
+    });
+
+    document.getElementById('removeFile').addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentFile = null;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('uploadSection').classList.remove('has-file');
+      document.getElementById('filePreview').classList.remove('show');
+    });
 
     document.getElementById('submitMeetingBtn').addEventListener('click', () => {
       const memberAId = document.getElementById('memberA').value;
@@ -722,6 +1301,11 @@
 
     document.getElementById('resetBtn').addEventListener('click', resetDemo);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      renderLeaderboard();
+    });
 
     initializeMembers();
     renderSelects();
