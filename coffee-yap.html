@@ -329,7 +329,8 @@
       color: var(--green-700);
     }
 
-    .week-panel {
+    .week-panel,
+    .admin-pairing-panel {
       margin-top: 22px;
       background: rgba(255, 255, 255, 0.78);
       padding: 22px 24px;
@@ -339,7 +340,8 @@
       max-width: 760px;
     }
 
-    .week-panel-label {
+    .week-panel-label,
+    .admin-pairing-label {
       font-size: 12px;
       font-weight: 900;
       text-transform: uppercase;
@@ -348,7 +350,8 @@
       margin-bottom: 10px;
     }
 
-    .week-panel-row {
+    .week-panel-row,
+    .admin-pairing-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -363,17 +366,21 @@
       line-height: 1.1;
     }
 
-    .week-subtext {
+    .week-subtext,
+    .admin-pairing-subtext {
       font-size: 14px;
       color: #5f6f58;
       margin-top: 4px;
       font-weight: 600;
+      line-height: 1.6;
     }
 
-    .week-actions {
+    .week-actions,
+    .admin-pairing-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .week-btn {
@@ -546,18 +553,6 @@
       align-items: start;
     }
 
-    .split-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 26px;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 26px;
-    }
-
     .card {
       background: white;
       border-radius: 24px;
@@ -708,7 +703,8 @@
 
     .status-badge,
     .role-badge,
-    .pair-badge {
+    .pair-badge,
+    .override-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -720,6 +716,12 @@
       color: #4a6a3d;
       border: 1px solid #d4e5cd;
       white-space: nowrap;
+    }
+
+    .override-badge {
+      background: #fff4df;
+      color: #8b6400;
+      border-color: #f0d694;
     }
 
     .status-icon {
@@ -1064,8 +1066,7 @@
     }
 
     .impact-card,
-    .summary-card,
-    .pair-card {
+    .summary-card {
       text-align: center;
       padding: 32px 24px;
       background: white;
@@ -1075,8 +1076,7 @@
     }
 
     .impact-card:hover,
-    .summary-card:hover,
-    .pair-card:hover {
+    .summary-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 8px 24px rgba(90, 122, 77, 0.15);
     }
@@ -1256,7 +1256,6 @@
     @media (max-width: 1100px) {
       .hero-content,
       .content-grid,
-      .two-col,
       .directory-card-grid,
       .pairings-grid {
         grid-template-columns: 1fr;
@@ -1348,7 +1347,6 @@
     </div>
   </nav>
 
-  <!-- HOME PAGE -->
   <section class="page active" id="homePage">
     <section class="hero-section">
       <div class="hero-content">
@@ -1545,7 +1543,6 @@
     </main>
   </section>
 
-  <!-- DIRECTORY PAGE -->
   <section class="page" id="directoryPage">
     <section class="hero-section" style="padding-bottom: 90px;">
       <div class="page-hero">
@@ -1601,7 +1598,6 @@
     </main>
   </section>
 
-  <!-- PAIRINGS PAGE -->
   <section class="page" id="pairingsPage">
     <section class="hero-section" style="padding-bottom: 90px;">
       <div class="page-hero">
@@ -1609,8 +1605,26 @@
         <h1>CURRENT COFFEE YAP MATCHES</h1>
         <p class="page-description">
           Pairings are generated from the <strong>current active participant list</strong> and automatically
-          update whenever the <strong>week increments</strong>. If the count is odd, one trio is created.
+          update whenever the <strong>week increments</strong>. Admin can also manually override a week’s pairings.
         </p>
+
+        <div class="admin-pairing-panel hidden" id="adminPairingPanel">
+          <div class="admin-pairing-label">Admin Pairing Controls</div>
+          <div class="admin-pairing-row">
+            <div>
+              <div class="admin-pairing-subtext">
+                Regenerate pairings for any week and store them as that week’s manual version.
+                You can also clear the override and fall back to the default seeded pairing.
+              </div>
+            </div>
+            <div class="admin-pairing-actions">
+              <input type="number" id="adminWeekInput" class="toolbar-input" min="1" step="1" placeholder="Week #" style="max-width: 120px; min-width: 120px;" />
+              <button class="mini-btn" id="adminRegenerateWeekBtn" type="button">Regenerate Week</button>
+              <button class="mini-btn secondary" id="adminUseCurrentWeekBtn" type="button">Use Current Week</button>
+              <button class="mini-btn danger" id="adminClearWeekOverrideBtn" type="button">Clear Override</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="wave-divider"></div>
     </section>
@@ -1625,13 +1639,13 @@
           </div>
           <div class="summary-card">
             <div class="summary-icon">👥</div>
-            <div class="summary-title" id="pairingCountStat">0 Pairings</div>
+            <div class="summary-title" id="pairingCountStat">0 Groups</div>
             <div class="summary-text">Randomized from active participants</div>
           </div>
           <div class="summary-card">
             <div class="summary-icon">🔄</div>
-            <div class="summary-title">Auto Refreshes</div>
-            <div class="summary-text">Updates every time the week moves forward</div>
+            <div class="summary-title" id="overrideStatusStat">Default Pairings</div>
+            <div class="summary-text">Shows whether this week has an admin override</div>
           </div>
         </div>
       </section>
@@ -1640,12 +1654,12 @@
         <div class="card-header">
           <h3 class="card-title">This Week’s Pairings</h3>
           <p class="card-subtitle">
-            Deterministic by week number so everyone sees the same pairings for the same week.
+            Default pairings are deterministic by week number, unless admin saves a manual override for that week.
           </p>
         </div>
 
         <div class="card-toolbar">
-          <div class="soft-note">Week changes create a new randomized set of pairings automatically.</div>
+          <div class="soft-note" id="pairingsNote">Week changes create a new randomized set of pairings automatically.</div>
           <button class="mini-btn secondary" id="copyPairingsBtn" type="button">Copy Pairings</button>
           <button class="mini-btn ghost" id="refreshPairingsBtn" type="button">Refresh View</button>
         </div>
@@ -1685,7 +1699,7 @@
       { name: 'Ria Sudhir', role: 'Project Manager', phone: '6692603373', email: 'riasudhir@berkeley.edu', birthday: 'October 3, 2006', major: 'Data Science & Political Economy' },
       { name: 'Srijay Vejendla', role: 'Project Manager', phone: '4088335508', email: 'srijay_vejendla@berkeley.edu', birthday: 'August 15, 2006', major: 'Business Administration, Data Science' },
       { name: 'Sriya Amati', role: 'Project Manager', phone: '97294615516', email: 'amati_sriya@berkeley.edu', birthday: 'December 6, 2005', major: 'Neuroscience' },
-      { name: 'Sriram Bhimaraju', role: 'Project Manager', phone: '4088213269', email: 'sriramb@berkeley.edu', birthday: 'January 14, 2006', major: 'EECS and Business' },
+           { name: 'Sriram Bhimaraju', role: 'Project Manager', phone: '4088213269', email: 'sriramb@berkeley.edu', birthday: 'January 14, 2006', major: 'EECS and Business' },
       { name: 'Tanya Wei', role: 'Project Manager', phone: '6263140992', email: 'tanyawei@berkeley.edu', birthday: 'September 29, 2006', major: 'Econ & Polsci' },
       { name: 'Gia-Minh Vo', role: 'Senior Consultant', phone: '5109992198', email: 'Giaminhvo@berkeley.edu', birthday: 'October 20, 2006', major: 'Environmental Science and Economics' },
       { name: 'Shreya Bhatia', role: 'Senior Consultant', phone: '3093070211', email: 'shreya_bhatia@berkeley.edu', birthday: 'October 14, 2005', major: 'Psychology, Social Welfare, Sociology' },
@@ -1754,6 +1768,7 @@
     let directorySearchTerm = '';
     let directoryRoleFilter = 'all';
     let currentPage = 'homePage';
+    let pairingOverrides = {};
 
     function initializeMembers() {
       members = starterMembers.map((name, index) => ({
@@ -1766,6 +1781,7 @@
       }));
 
       currentWeek = 1;
+      pairingOverrides = {};
 
       meetingHistory = [
         createHistoryEntry('System initialized. All members start with baseline engagement score. Let’s build connections!', 'system')
@@ -1844,6 +1860,7 @@
       localStorage.setItem('coffeeYapHistory', JSON.stringify(meetingHistory));
       localStorage.setItem('coffeeYapWeek', String(currentWeek));
       localStorage.setItem('coffeeYapCurrentPage', currentPage);
+      localStorage.setItem('coffeeYapPairingOverrides', JSON.stringify(pairingOverrides));
     }
 
     function loadState() {
@@ -1851,6 +1868,7 @@
       const savedHistory = localStorage.getItem('coffeeYapHistory');
       const savedWeek = localStorage.getItem('coffeeYapWeek');
       const savedPage = localStorage.getItem('coffeeYapCurrentPage');
+      const savedPairingOverrides = localStorage.getItem('coffeeYapPairingOverrides');
 
       if (savedMembers) {
         members = JSON.parse(savedMembers).map(member => ({
@@ -1872,10 +1890,40 @@
       if (savedPage) {
         currentPage = savedPage;
       }
+
+      if (savedPairingOverrides) {
+        pairingOverrides = JSON.parse(savedPairingOverrides);
+      }
     }
 
     function findMemberById(id) {
       return members.find(member => member.id === Number(id));
+    }
+
+    function getWeekOverrideKey(week) {
+      return `week-${week}`;
+    }
+
+    function serializePairings(pairings) {
+      return pairings.map(group => group.map(person => person.name));
+    }
+
+    function deserializePairings(serializedGroups) {
+      const activeByName = new Map(getActiveDirectory().map(person => [person.name, person]));
+      const validGroups = [];
+
+      for (const group of serializedGroups) {
+        const resolved = [];
+        for (const name of group) {
+          const person = activeByName.get(name);
+          if (!person) return null;
+          resolved.push(person);
+        }
+        if (resolved.length < 2 || resolved.length > 3) return null;
+        validGroups.push(resolved);
+      }
+
+      return validGroups;
     }
 
     function renderWeek() {
@@ -2093,12 +2141,12 @@
       return arr;
     }
 
-    function getCurrentPairings() {
+    function getAutoPairingsForWeek(week) {
       const activeParticipants = getActiveDirectory()
         .filter(person => person.role !== 'Abroad')
         .map(person => ({ ...person }));
 
-      const shuffled = shuffleWithSeed(activeParticipants, `coffee-yap-week-${currentWeek}`);
+      const shuffled = shuffleWithSeed(activeParticipants, `coffee-yap-week-${week}`);
       const result = [];
 
       let i = 0;
@@ -2116,11 +2164,28 @@
       return result;
     }
 
+    function getCurrentPairings() {
+      const overrideKey = getWeekOverrideKey(currentWeek);
+      const override = pairingOverrides[overrideKey];
+
+      if (override) {
+        const restored = deserializePairings(override);
+        if (restored) return restored;
+      }
+
+      return getAutoPairingsForWeek(currentWeek);
+    }
+
     function renderPairings() {
       const grid = document.getElementById('pairingsGrid');
       const pairings = getCurrentPairings();
+      const isCustom = Boolean(pairingOverrides[getWeekOverrideKey(currentWeek)]);
 
       document.getElementById('pairingCountStat').textContent = `${pairings.length} Groups`;
+      document.getElementById('overrideStatusStat').textContent = isCustom ? 'Admin Override Active' : 'Default Pairings';
+      document.getElementById('pairingsNote').textContent = isCustom
+        ? `Week ${currentWeek} is currently showing an admin override pairing set.`
+        : `Week ${currentWeek} is currently showing the default seeded pairing set.`;
 
       if (pairings.length === 0) {
         grid.innerHTML = `<div class="pairings-empty" style="grid-column:1 / -1;">No active pairings available.</div>`;
@@ -2142,7 +2207,10 @@
               `).join('')}
             </div>
             <div class="pairing-footer">
-              <span class="pair-badge">${group.length === 2 ? '2 Person Match' : '3 Person Match'}</span>
+              <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <span class="pair-badge">${group.length === 2 ? '2 Person Match' : '3 Person Match'}</span>
+                ${isCustom ? '<span class="override-badge">Custom Week Pairing</span>' : ''}
+              </div>
               <button
                 class="mini-btn secondary"
                 type="button"
@@ -2156,6 +2224,16 @@
       }).join('');
     }
 
+    function renderAdminPairingPanel() {
+      const panel = document.getElementById('adminPairingPanel');
+      if (!panel) return;
+
+      panel.classList.toggle('hidden', !adminVisible);
+      if (adminVisible) {
+        document.getElementById('adminWeekInput').value = currentWeek;
+      }
+    }
+
     function rerenderAll() {
       renderWeek();
       renderHeroStats();
@@ -2164,6 +2242,7 @@
       renderDirectoryFilters();
       renderDirectory();
       renderPairings();
+      renderAdminPairingPanel();
       updatePageVisibility();
     }
 
@@ -2399,15 +2478,15 @@
 
       adminVisible = true;
       document.getElementById('adminPanel').classList.add('show');
+      rerenderAll();
       setMessage('Admin mode unlocked.', 'success');
-      renderHistory();
     }
 
     function exitAdminMode() {
       adminVisible = false;
       document.getElementById('adminPanel').classList.remove('show');
+      rerenderAll();
       setMessage('Admin mode hidden.', 'success');
-      renderHistory();
     }
 
     function switchPage(pageId) {
@@ -2446,6 +2525,85 @@
       }).join('\n\n');
 
       copyToClipboard(text, `Week ${currentWeek} pairings copied.`);
+    }
+
+    function setCurrentWeekFromAdminInput() {
+      const weekInput = document.getElementById('adminWeekInput');
+      const requestedWeek = Number(weekInput.value);
+
+      if (!Number.isInteger(requestedWeek) || requestedWeek < 1) {
+        setMessage('Enter a valid week number greater than or equal to 1.', 'error');
+        return null;
+      }
+
+      currentWeek = requestedWeek;
+      renderWeek();
+      return requestedWeek;
+    }
+
+    function adminUseCurrentWeek() {
+      if (!adminVisible) {
+        setMessage('Admin mode required.', 'error');
+        return;
+      }
+
+      document.getElementById('adminWeekInput').value = currentWeek;
+      setMessage(`Admin controls set to current week: Week ${currentWeek}.`, 'success');
+    }
+
+    function adminRegenerateWeekPairings() {
+      if (!adminVisible) {
+        setMessage('Admin mode required to change pairings.', 'error');
+        return;
+      }
+
+      const week = setCurrentWeekFromAdminInput();
+      if (!week) return;
+
+      const generated = getAutoPairingsForWeek(week);
+      const shuffledAgain = shuffleWithSeed(
+        generated.flat().map(person => ({ ...person })),
+        `admin-override-${week}-${Date.now()}`
+      );
+
+      const result = [];
+      let i = 0;
+      while (i < shuffledAgain.length) {
+        const remaining = shuffledAgain.length - i;
+        if (remaining === 3) {
+          result.push(shuffledAgain.slice(i, i + 3));
+          i += 3;
+        } else {
+          result.push(shuffledAgain.slice(i, i + 2));
+          i += 2;
+        }
+      }
+
+      pairingOverrides[getWeekOverrideKey(week)] = serializePairings(result);
+      rerenderAll();
+      saveState();
+      setMessage(`Admin regenerated and saved a manual pairing override for Week ${week}.`, 'success');
+    }
+
+    function adminClearWeekOverride() {
+      if (!adminVisible) {
+        setMessage('Admin mode required to clear pairings.', 'error');
+        return;
+      }
+
+      const week = setCurrentWeekFromAdminInput();
+      if (!week) return;
+
+      const key = getWeekOverrideKey(week);
+      if (!pairingOverrides[key]) {
+        setMessage(`Week ${week} is already using default pairings.`, 'success');
+        return;
+      }
+
+      delete pairingOverrides[key];
+      rerenderAll();
+      saveState();
+      setMessage(`Cleared the manual pairing override for Week ${week}.`, 'success');
     }
 
     document.getElementById('uploadSection').addEventListener('click', () => {
@@ -2526,6 +2684,10 @@
       renderPairings();
       setMessage(`Week ${currentWeek} pairings refreshed.`, 'success');
     });
+
+    document.getElementById('adminRegenerateWeekBtn').addEventListener('click', adminRegenerateWeekPairings);
+    document.getElementById('adminUseCurrentWeekBtn').addEventListener('click', adminUseCurrentWeek);
+    document.getElementById('adminClearWeekOverrideBtn').addEventListener('click', adminClearWeekOverride);
 
     document.querySelectorAll('.nav-link[data-page]').forEach(button => {
       button.addEventListener('click', () => switchPage(button.dataset.page));
