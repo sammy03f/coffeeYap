@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donut Bot Leaderboard</title>
+  <style>
+    :root {
+      --bg: #f4f7ee;
+      --panel: #dce9c3;
+      --panel-2: #edf4df;
+      --accent: #5f8612;
+      --accent-dark: #45650c;
+      --text: #111111;
+      --muted: #4d4d4d;
+      --border: rgba(17, 17, 17, 0.12);
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+      --radius-xl: 32px;
+      --radius-lg: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef5e3 0%, #f9fbf4 100%);
+      color: var(--text);
+    }
+
+    .navbar {
+      background: #d6e6b8;
+      padding: 20px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-weight: 700;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links span {
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-button {
+      border: none;
+      background: var(--accent);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1320px;
+      margin: 42px auto;
+      padding: 0 28px 48px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+      border-radius: 40px;
+      padding: 42px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-dark);
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      font-size: 1.35rem;
+      line-height: 1.45;
+      color: #222;
+      margin-top: 26px;
+      margin-bottom: 0;
+    }
+
+    .hero strong {
+      font-weight: 900;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-self: center;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 24px;
+      padding: 22px;
+      min-height: 128px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .stat-value {
+      margin-top: 12px;
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      gap: 28px;
+      margin-top: 28px;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 28px 30px 12px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .card-subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 1rem;
+    }
+
+    .table-wrap {
+      padding: 0 20px 24px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 18px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 1rem;
+    }
+
+    th {
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    td.rank-cell {
+      font-weight: 900;
+      width: 90px;
+    }
+
+    td.rating-cell {
+      font-weight: 800;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: #eef5e3;
+      color: var(--accent-dark);
+    }
+
+    .trophy {
+      font-size: 1rem;
+    }
+
+    .form-card {
+      padding: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #222;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      font-size: 1rem;
+      background: white;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .secondary {
+      background: #edf2e4;
+      color: #203008;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #f5f8ef;
+      border: 1px solid rgba(95, 134, 18, 0.14);
+      border-radius: 14px;
+      color: #31460f;
+      line-height: 1.45;
+      font-size: 0.96rem;
+    }
+
+    .formula-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #f7f9f3;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      font-size: 0.97rem;
+      line-height: 1.55;
+    }
+
+    .formula-box code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.93rem;
+      font-weight: 700;
+    }
+
+    .history-list {
+      list-style: none;
+      margin: 0;
+      padding: 0 28px 28px;
+    }
+
+    .history-item {
+      border-top: 1px solid var(--border);
+      padding: 18px 0;
+      line-height: 1.45;
+    }
+
+    .history-item strong {
+      font-weight: 900;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    @media (max-width: 1000px) {
+      .hero,
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 18px 20px;
+      }
+
+      .page {
+        padding: 0 16px 32px;
+      }
+
+      .hero {
+        padding: 24px;
+        border-radius: 28px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header,
+      .form-card,
+      .history-list {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .table-wrap {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-badge">🍩</div>
+      <div>Donut Meeting Leaderboard</div>
+    </div>
+    <div class="nav-links">
+      <span>Leaderboard</span>
+      <span>Report Meeting</span>
+      <span>Scoring Logic</span>
+    </div>
+    <button class="nav-button" id="resetTopBtn">Reset Demo</button>
+  </nav>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Weekly Social Momentum</div>
+        <h1>BOOST RELIABLE CONNECTIONS</h1>
+        <p>
+          Every confirmed donut meeting raises <strong>both</strong> members' scores.
+          The reward is <strong>bigger</strong> when you follow through with someone who
+          does not usually complete meetings.
+        </p>
+      </div>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <section class="section-grid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Leaderboard</h2>
+          <div class="card-subtitle">
+            Reliability starts from a benchmark instead of a long history, so the system works
+            even when your group has only done a few meetings so far.
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Member</th>
+                <th>Rating</th>
+                <th>Reliability</th>
+                <th>Meetings</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card form-card">
+        <h2 class="card-title">Report Meeting</h2>
+        <div class="card-subtitle">
+          Demo logic: choose two different people and submit one completed meeting.
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="memberA">Member A</label>
+            <select id="memberA"></select>
+          </div>
+
+          <div class="field">
+            <label for="memberB">Member B</label>
+            <select id="memberB"></select>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="submitMeetingBtn">Submit Completed Meeting</button>
+          <button class="secondary" id="resetBtn">Reset Demo Data</button>
+        </div>
+
+        <div class="note" id="messageBox">
+          Submit a meeting to update the leaderboard.
+        </div>
+
+        <div class="formula-box">
+          <strong>Benchmark reliability:</strong> every member starts with a prior of
+          <code>4 completed out of 6 expected</code>, so initial reliability is
+          <code>4 / 6 = 0.667</code>.
+          <br /><br />
+          <strong>Displayed reliability:</strong>
+          <br />
+          <code>(benchmarkCompleted + completedMeetings) / (benchmarkExpected + assignedMeetings)</code>
+          <br /><br />
+          <strong>Meeting gain for A:</strong>
+          <br />
+          <code>gainA = round(BASE × (1 + ALPHA × (1 - reliabilityB)))</code>
+          <br />
+          with <code>BASE = 20</code> and <code>ALPHA = 0.75</code>.
+          <br /><br />
+          So meeting with someone less likely to complete meetings gives a larger boost.
+        </div>
+      </div>
+    </section>
+
+    <section class="section-grid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Meeting Events</h2>
+          <div class="card-subtitle">Newest updates appear at the top.</div>
+        </div>
+        <ul class="history-list" id="historyList"></ul>
+      </div>
+
+      <div class="card form-card">
+        <h2 class="card-title">Why the benchmark helps</h2>
+        <div class="card-subtitle">
+          Since your community has not done many meetings yet, pure completion rate would be too noisy.
+        </div>
+        <div class="formula-box">
+          Instead of starting everybody at 0% or 100%, we use a <strong>neutral prior</strong>:
+          <br /><br />
+          <code>benchmarkCompleted = 4</code>
+          <br />
+          <code>benchmarkExpected = 6</code>
+          <br /><br />
+          That means everybody starts near <strong>66.7%</strong> reliability.
+          After more meetings, real behavior gradually matters more than the benchmark.
+          <br /><br />
+          This is basically a simple smoothing method, so early leaderboard movement feels fair.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const BASE_RATING = 1000;
+    const BASE_GAIN = 20;
+    const ALPHA = 0.75;
+    const BENCHMARK_COMPLETED = 4;
+    const BENCHMARK_EXPECTED = 6;
+
+    const starterMembers = [
+      'Sammy',
+      'Kabir',
+      'Bubnack',
+      'Aaron',
+      'Sonny',
+      'JJ',
+      'Ramji',
+      'Aadi',
+      'Jasper',
+      'Joe',
+      'Gonya',
+      'Mallinger'
+    ];
+
+    let members = [];
+    let meetingHistory = [];
+
+    function initializeMembers() {
+      members = starterMembers.map((name, index) => ({
+        id: index + 1,
+        name,
+        rating: BASE_RATING,
+        completedMeetings: 0,
+        assignedMeetings: 0
+      }));
+
+      meetingHistory = [
+        'System ready. Everyone begins with benchmark reliability 66.7% and rating 1000.'
+      ];
+    }
+
+    function getReliability(member) {
+      return (BENCHMARK_COMPLETED + member.completedMeetings) /
+             (BENCHMARK_EXPECTED + member.assignedMeetings);
+    }
+
+    function getStatusLabel(reliability) {
+      if (reliability >= 0.8) return 'Highly reliable';
+      if (reliability >= 0.65) return 'Consistent';
+      if (reliability >= 0.5) return 'Mixed';
+      return 'Needs activation';
+    }
+
+    function formatPercent(decimal) {
+      return `${(decimal * 100).toFixed(1)}%`;
+    }
+
+    function renderSelects() {
+      const memberA = document.getElementById('memberA');
+      const memberB = document.getElementById('memberB');
+      const optionsHtml = members
+        .map(member => `<option value="${member.id}">${member.name}</option>`)
+        .join('');
+
+      memberA.innerHTML = optionsHtml;
+      memberB.innerHTML = optionsHtml;
+
+      if (members.length > 1) {
+        memberA.value = String(members[0].id);
+        memberB.value = String(members[1].id);
+      }
+    }
+
+    function renderStats() {
+      const totalCompleted = members.reduce((sum, m) => sum + m.completedMeetings, 0);
+      const avgReliability = members.reduce((sum, m) => sum + getReliability(m), 0) / members.length;
+      const leader = [...members].sort((a, b) => b.rating - a.rating)[0];
+      const totalEvents = meetingHistory.length - 1;
+
+      document.getElementById('stats').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Current Leader</div>
+          <div class="stat-value">${leader.name}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Top Rating</div>
+          <div class="stat-value">${leader.rating}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Reliability</div>
+          <div class="stat-value">${formatPercent(avgReliability)}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed Meetings</div>
+          <div class="stat-value">${totalCompleted}</div>
+        </div>
+      `;
+    }
+
+    function renderLeaderboard() {
+      const sorted = [...members].sort((a, b) => {
+        if (b.rating !== a.rating) return b.rating - a.rating;
+        return b.completedMeetings - a.completedMeetings;
+      });
+
+      const body = document.getElementById('leaderboardBody');
+      body.innerHTML = sorted.map((member, index) => {
+        const reliability = getReliability(member);
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '#';
+        return `
+          <tr>
+            <td class="rank-cell">${medal} ${index + 1}</td>
+            <td><strong>${member.name}</strong></td>
+            <td class="rating-cell">${member.rating}</td>
+            <td>${formatPercent(reliability)}</td>
+            <td>${member.completedMeetings}</td>
+            <td><span class="pill"><span class="trophy">●</span>${getStatusLabel(reliability)}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      list.innerHTML = [...meetingHistory].reverse().map(item => `
+        <li class="history-item">${item}</li>
+      `).join('');
+    }
+
+    function rerenderAll() {
+      renderStats();
+      renderLeaderboard();
+      renderHistory();
+    }
+
+    function setMessage(message) {
+      document.getElementById('messageBox').textContent = message;
+    }
+
+    function findMemberById(id) {
+      return members.find(member => member.id === Number(id));
+    }
+
+    function recordCompletedMeeting(memberAId, memberBId) {
+      const memberA = findMemberById(memberAId);
+      const memberB = findMemberById(memberBId);
+
+      if (!memberA || !memberB) {
+        setMessage('Could not find one of the selected members.');
+        return;
+      }
+
+      if (memberA.id === memberB.id) {
+        setMessage('Choose two different members.');
+        return;
+      }
+
+      memberA.assignedMeetings += 1;
+      memberB.assignedMeetings += 1;
+
+      const reliabilityA = getReliability(memberA);
+      const reliabilityB = getReliability(memberB);
+
+      const gainA = Math.round(BASE_GAIN * (1 + ALPHA * (1 - reliabilityB)));
+      const gainB = Math.round(BASE_GAIN * (1 + ALPHA * (1 - reliabilityA)));
+
+      memberA.completedMeetings += 1;
+      memberB.completedMeetings += 1;
+      memberA.rating += gainA;
+      memberB.rating += gainB;
+
+      const updatedReliabilityA = getReliability(memberA);
+      const updatedReliabilityB = getReliability(memberB);
+
+      const eventText = `
+        <strong>${memberA.name}</strong> and <strong>${memberB.name}</strong> completed a donut meeting.
+        ${memberA.name} gained <strong>+${gainA}</strong> and is now at <strong>${memberA.rating}</strong>
+        (${formatPercent(updatedReliabilityA)} reliability). ${memberB.name} gained <strong>+${gainB}</strong>
+        and is now at <strong>${memberB.rating}</strong> (${formatPercent(updatedReliabilityB)} reliability).
+      `;
+
+      meetingHistory.push(eventText);
+      setMessage(`${memberA.name} and ${memberB.name} were updated successfully.`);
+      rerenderAll();
+    }
+
+    function resetDemo() {
+      initializeMembers();
+      renderSelects();
+      rerenderAll();
+      setMessage('Demo data reset. Everyone is back to the benchmark start.');
+    }
+
+    document.getElementById('submitMeetingBtn').addEventListener('click', () => {
+      const memberAId = document.getElementById('memberA').value;
+      const memberBId = document.getElementById('memberB').value;
+      recordCompletedMeeting(memberAId, memberBId);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', resetDemo);
+    document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
+
+    initializeMembers();
+    renderSelects();
+    rerenderAll();
+  </script>
+</body>
+</html>
