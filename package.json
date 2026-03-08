@@ -1,0 +1,13 @@
+{
+  "name": "coffeeyap",
+  "version": "1.0.0",
+  "description": "Coffee Yap leaderboard server",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
