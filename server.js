@@ -1,3 +1,13 @@
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
+app.use(express.static(__dirname));
+
 let state = {
   members: [],
   meetingHistory: [],
@@ -6,48 +16,27 @@ let state = {
   currentPage: "homePage"
 };
 
-/*
-LOAD STATE FROM SERVER
-*/
-async function loadState() {
-  try {
-    const res = await fetch("/data");
-    const data = await res.json();
-    state = data;
-    console.log("Loaded state:", state);
-  } catch (err) {
-    console.error("Failed to load state", err);
-  }
+if (fs.existsSync("data.json")) {
+  state = JSON.parse(fs.readFileSync("data.json"));
 }
 
-/*
-SAVE STATE TO SERVER
-*/
-async function saveState() {
-  try {
-    await fetch("/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(state)
-    });
+/* GET DATA */
+app.get("/data", (req, res) => {
+  res.json(state);
+});
 
-    console.log("State saved");
-  } catch (err) {
-    console.error("Failed to save state", err);
-  }
-}
+/* SAVE DATA */
+app.post("/save", (req, res) => {
+  state = req.body;
+  fs.writeFileSync("data.json", JSON.stringify(state, null, 2));
+  res.sendStatus(200);
+});
 
-/*
-EXAMPLE ACTION (TEST)
-*/
-function addTestMember() {
-  state.members.push("test-user-" + Math.floor(Math.random() * 1000));
-  saveState();
-}
+/* LOAD WEBSITE */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
-/*
-LOAD DATA WHEN PAGE STARTS
-*/
-window.addEventListener("load", loadState);
+app.listen(PORT, () => {
+  console.log(`CoffeeYap running at http://localhost:${PORT}`);
+});
