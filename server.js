@@ -1,77 +1,53 @@
-const express = require("express");
-const { createClient } = require("@supabase/supabase-js");
-const path = require("path");
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
-
-// connect to supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+let state = {
+  members: [],
+  meetingHistory: [],
+  currentWeek: 1,
+  pairingOverrides: {},
+  currentPage: "homePage"
+};
 
 /*
-------------------------------------
-GET CURRENT STATE
-------------------------------------
+LOAD STATE FROM SERVER
 */
-app.get("/data", async (req, res) => {
+async function loadState() {
   try {
-    const { data, error } = await supabase
-      .from("state")
-      .select("data")
-      .eq("id", 1)
-      .single();
-
-    if (error) throw error;
-
-    res.json(data.data);
+    const res = await fetch("/data");
+    const data = await res.json();
+    state = data;
+    console.log("Loaded state:", state);
   } catch (err) {
-    console.error("Error loading state:", err);
-    res.status(500).json({ error: "Failed to load data" });
+    console.error("Failed to load state", err);
   }
-});
+}
 
 /*
-------------------------------------
-SAVE STATE
-------------------------------------
+SAVE STATE TO SERVER
 */
-app.post("/save", async (req, res) => {
+async function saveState() {
   try {
-    const { error } = await supabase
-      .from("state")
-      .update({ data: req.body })
-      .eq("id", 1);
+    await fetch("/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(state)
+    });
 
-    if (error) throw error;
-
-    res.json({ success: true });
+    console.log("State saved");
   } catch (err) {
-    console.error("Error saving state:", err);
-    res.status(500).json({ error: "Failed to save data" });
+    console.error("Failed to save state", err);
   }
-});
+}
 
 /*
-------------------------------------
-HEALTH CHECK (optional but nice)
-------------------------------------
+EXAMPLE ACTION (TEST)
 */
-app.get("/ping", (req, res) => {
-  res.send("CoffeeYap server alive ☕");
-});
+function addTestMember() {
+  state.members.push("test-user-" + Math.floor(Math.random() * 1000));
+  saveState();
+}
 
 /*
-------------------------------------
-START SERVER
-------------------------------------
+LOAD DATA WHEN PAGE STARTS
 */
-app.listen(PORT, () => {
-  console.log(`Coffee Yap server running on port ${PORT}`);
-});
+window.addEventListener("load", loadState);
