@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+
+
+
+
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coffee Yap - Building Community Through Connection</title>
@@ -1723,6 +1728,13 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
   </section>
 
   <script>
+
+    const supabase = window.supabase.createClient(
+  "https://mfpxxeiujmufckgwezzz.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHh4ZWl1am11ZmNrZ3dlenp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMDEzNzQsImV4cCI6MjA4ODU3NzM3NH0._5DKfXHI7HxCQ9Wzp7MEM5le3anavLI3Gf67w6s8rU8"
+    );
+
+
     const BASE_RATING = 1000;
     const BASE_GAIN = 20;
     const ALPHA = 0.75;
@@ -1908,46 +1920,71 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       };
     }
 
-    function saveState() {
-      localStorage.setItem('coffeeYapMembers', JSON.stringify(members));
-      localStorage.setItem('coffeeYapHistory', JSON.stringify(meetingHistory));
-      localStorage.setItem('coffeeYapWeek', String(currentWeek));
-      localStorage.setItem('coffeeYapCurrentPage', currentPage);
-      localStorage.setItem('coffeeYapPairingOverrides', JSON.stringify(pairingOverrides));
+    async function saveState() {
+
+  const appState = {
+    members,
+    meetingHistory,
+    currentWeek,
+    pairingOverrides,
+    currentPage
+  };
+
+  const { error } = await supabase
+    .from("app_state")
+    .upsert({
+      id: 1,
+      state: appState
+    });
+
+  if (error) {
+    console.error("Save failed:", error);
+  } else {
+    console.log("State saved");
+  }
+}
+
+  try {
+    const res = await fetch("/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(appState)
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to save state");
     }
 
-    function loadState() {
-      const savedMembers = localStorage.getItem('coffeeYapMembers');
-      const savedHistory = localStorage.getItem('coffeeYapHistory');
-      const savedWeek = localStorage.getItem('coffeeYapWeek');
-      const savedPage = localStorage.getItem('coffeeYapCurrentPage');
-      const savedPairingOverrides = localStorage.getItem('coffeeYapPairingOverrides');
+    console.log("State saved to server");
+  } catch (err) {
+    console.error("Failed to save state", err);
+  }
 
-      if (savedMembers) {
-        members = JSON.parse(savedMembers).map(member => ({
-          ...member,
-          lastMeetingWeek: member.lastMeetingWeek || 0
-        }));
-      } else {
-        initializeMembers();
-      }
+    async function loadState() {
 
-      if (savedHistory) {
-        meetingHistory = JSON.parse(savedHistory);
-      }
+  const { data, error } = await supabase
+    .from("app_state")
+    .select("state")
+    .eq("id", 1)
+    .single();
 
-      if (savedWeek) {
-        currentWeek = Number(savedWeek) || 1;
-      }
+  if (error || !data) {
+    console.log("No saved state, initializing");
+    initializeMembers();
+    await saveState();
+    return;
+  }
 
-      if (savedPage) {
-        currentPage = savedPage;
-      }
+  const savedState = data.state;
 
-      if (savedPairingOverrides) {
-        pairingOverrides = JSON.parse(savedPairingOverrides);
-      }
-    }
+  members = savedState.members || [];
+  meetingHistory = savedState.meetingHistory || [];
+  currentWeek = savedState.currentWeek || 1;
+  pairingOverrides = savedState.pairingOverrides || {};
+  currentPage = savedState.currentPage || "homePage";
+}
 
     function findMemberById(id) {
       return members.find(member => member.id === Number(id));
@@ -2861,9 +2898,11 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     document.getElementById('exitAdminBtn').addEventListener('click', exitAdminMode);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
 
-    loadState();
-    renderSelects();
-    rerenderAll();
+    (async function initApp() {
+  await loadState();
+  renderSelects();
+  rerenderAll();
+})();
 
     window.copyToClipboard = copyToClipboard;
   </script>
