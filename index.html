@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coffee Yap - Building Community Through Connection</title>
@@ -1722,6 +1723,10 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
   </section>
 
   <script>
+    const supabaseUrl = "https://mfpxxeiujmufckgwezzz.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHh4ZWl1am11ZmNrZ3dlenp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMDEzNzQsImV4cCI6MjA4ODU3NzM3NH0._5DKfXHI7HxCQ9Wzp7MEM5le3anavLI3Gf67w6s8rU8";
+
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
     const BASE_RATING = 1000;
     const BASE_GAIN = 20;
     const ALPHA = 0.75;
@@ -1822,15 +1827,19 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     let currentPage = 'homePage';
     let pairingOverrides = {};
 
-    function initializeMembers() {
-      members = starterMembers.map((name, index) => ({
-        id: index + 1,
-        name,
-        rating: BASE_RATING,
-        completedMeetings: 0,
-        assignedMeetings: 0,
-        lastMeetingWeek: 0
-      }));
+    async function loadMembersFromDB() {
+    const { data, error } = await supabaseClient
+      .from("members")
+      .select("*");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    members = data;
+    rerenderAll();
+      };
 
       currentWeek = 1;
       pairingOverrides = {};
@@ -1838,7 +1847,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       meetingHistory = [
         createHistoryEntry('System initialized. All members start with baseline engagement score. Let’s build connections!', 'system')
       ];
-    }
+    
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -2419,6 +2428,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     }
 
     function recordCompletedMeeting(memberAId, memberBId) {
+
       const submitBtn = document.getElementById('submitMeetingBtn');
       submitBtn.disabled = true;
 
@@ -2463,8 +2473,22 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       const updatedReliabilityB = getReliability(memberB);
 
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const photoSrc = e.target.result;
+
+reader.onload = async function(e) {
+
+  const photoSrc = e.target.result;
+
+  await supabaseClient
+    .from("meetings")
+    .insert({
+      member_a: memberA.name,
+      member_b: memberB.name,
+      week: currentWeek,
+      photo_url: photoSrc,
+      created_at: new Date()
+    });
+
+
         const photoHTML = `<img src="${photoSrc}" class="history-photo" alt="Meeting photo" />`;
 
         const eventText = `
@@ -2860,9 +2884,9 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     document.getElementById('exitAdminBtn').addEventListener('click', exitAdminMode);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
 
-    loadState();
-    renderSelects();
-    rerenderAll();
+    loadMembersFromDB();
+renderSelects();
+rerenderAll();
 
     window.copyToClipboard = copyToClipboard;
   </script>
