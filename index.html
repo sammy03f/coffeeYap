@@ -217,47 +217,47 @@
     }
 
     .hero-section {
-  background:
-    radial-gradient(circle at 78% 24%, rgba(90, 122, 77, 0.12), transparent 24%),
-    linear-gradient(135deg, #d8e7d1 0%, #edf4e9 45%, #f8f9f5 100%);
-  padding: 72px 40px 130px;
-  position: relative;
-  overflow: hidden;
-  z-index: 0;
-}
+      background:
+        radial-gradient(circle at 78% 24%, rgba(90, 122, 77, 0.12), transparent 24%),
+        linear-gradient(135deg, #d8e7d1 0%, #edf4e9 45%, #f8f9f5 100%);
+      padding: 72px 40px 130px;
+      position: relative;
+      overflow: hidden;
+      z-index: 0;
+    }
 
-.hero-section::before {
-  content: '';
-  position: absolute;
-  right: -160px;
-  top: 40px;
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle, rgba(90, 122, 77, 0.10) 0%, rgba(90, 122, 77, 0.03) 45%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: -1;
-}
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      right: -160px;
+      top: 40px;
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(90, 122, 77, 0.10) 0%, rgba(90, 122, 77, 0.03) 45%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
 
-.hero-section::after {
-  content: '';
-  position: absolute;
-  left: -120px;
-  bottom: 40px;
-  width: 520px;
-  height: 220px;
-  background: linear-gradient(135deg, var(--green-300), #86bd5d);
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  transform: rotate(-8deg);
-  opacity: 0.85;
-  pointer-events: none;
-  z-index: -1;
-}
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      left: -120px;
+      bottom: 40px;
+      width: 520px;
+      height: 220px;
+      background: linear-gradient(135deg, var(--green-300), #86bd5d);
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+      transform: rotate(-8deg);
+      opacity: 0.85;
+      pointer-events: none;
+      z-index: -1;
+    }
 
     .hero-content {
-  position: relative;
-  z-index: 1;
-}
+      position: relative;
+      z-index: 1;
+    }
 
     .hero-text h1,
     .page-hero h1 {
@@ -643,31 +643,29 @@
     }
 
     .table-container {
-    overflow-x: auto;
-    padding: 0 24px 24px;
-
-    scrollbar-width: thin;
-    scrollbar-color: #5a7a4d #eef4ea;
+      overflow-x: auto;
+      padding: 0 24px 24px;
+      scrollbar-width: thin;
+      scrollbar-color: #5a7a4d #eef4ea;
     }
+
     .table-container::-webkit-scrollbar {
-    height: 10px;
-  }
+      height: 10px;
+    }
 
-  .table-container::-webkit-scrollbar-track {
-    background: #eef4ea;
-    border-radius: 6px;
-  }
+    .table-container::-webkit-scrollbar-track {
+      background: #eef4ea;
+      border-radius: 6px;
+    }
 
-  .table-container::-webkit-scrollbar-thumb {
-    background: #5a7a4d;
-    border-radius: 6px;
-  }
+    .table-container::-webkit-scrollbar-thumb {
+      background: #5a7a4d;
+      border-radius: 6px;
+    }
 
-  .table-container::-webkit-scrollbar-thumb:hover {
-    background: #4a6a3d;
-  }
-
-  
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #4a6a3d;
+    }
 
     table {
       width: 100%;
@@ -1721,7 +1719,14 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     </main>
   </section>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://mfpxxeiujmufckgwezzz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHh4ZWl1am11ZmNrZ3dlenp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMDEzNzQsImV4cCI6MjA4ODU3NzM3NH0._5DKfXHI7HxCQ9Wzp7MEM5le3anavLI3Gf67w6s8rU8';
+
+    window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const BASE_RATING = 1000;
     const BASE_GAIN = 20;
     const ALPHA = 0.75;
@@ -1821,6 +1826,8 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     let directoryRoleFilter = 'all';
     let currentPage = 'homePage';
     let pairingOverrides = {};
+    let isApplyingRemoteState = false;
+    let realtimeChannel = null;
 
     function initializeMembers() {
       members = starterMembers.map((name, index) => ({
@@ -1833,6 +1840,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       }));
 
       currentWeek = 1;
+      currentPage = 'homePage';
       pairingOverrides = {};
 
       meetingHistory = [
@@ -1907,45 +1915,117 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       };
     }
 
-    function saveState() {
-      localStorage.setItem('coffeeYapMembers', JSON.stringify(members));
-      localStorage.setItem('coffeeYapHistory', JSON.stringify(meetingHistory));
-      localStorage.setItem('coffeeYapWeek', String(currentWeek));
-      localStorage.setItem('coffeeYapCurrentPage', currentPage);
-      localStorage.setItem('coffeeYapPairingOverrides', JSON.stringify(pairingOverrides));
+    async function saveState() {
+      if (isApplyingRemoteState) return;
+      if (!window.supabase) return;
+
+      const payload = {
+        members,
+        meetingHistory,
+        currentWeek,
+        currentPage,
+        pairingOverrides
+      };
+
+      const { error } = await window.supabase
+        .from('app_state')
+        .update({ state: payload })
+        .eq('id', 1);
+
+      if (error) {
+        console.error('Failed to save app state:', error);
+        setMessage('Failed to sync changes to Supabase.', 'error');
+      }
     }
 
-    function loadState() {
-      const savedMembers = localStorage.getItem('coffeeYapMembers');
-      const savedHistory = localStorage.getItem('coffeeYapHistory');
-      const savedWeek = localStorage.getItem('coffeeYapWeek');
-      const savedPage = localStorage.getItem('coffeeYapCurrentPage');
-      const savedPairingOverrides = localStorage.getItem('coffeeYapPairingOverrides');
+    function applyRemoteState(state) {
+      if (!state) return;
 
-      if (savedMembers) {
-        members = JSON.parse(savedMembers).map(member => ({
-          ...member,
-          lastMeetingWeek: member.lastMeetingWeek || 0
-        }));
-      } else {
+      isApplyingRemoteState = true;
+
+      members = Array.isArray(state.members)
+        ? state.members.map(member => ({
+            ...member,
+            lastMeetingWeek: member.lastMeetingWeek || 0
+          }))
+        : [];
+
+      meetingHistory = Array.isArray(state.meetingHistory) ? state.meetingHistory : [];
+      currentWeek = Number(state.currentWeek) || 1;
+      currentPage = state.currentPage || 'homePage';
+      pairingOverrides = state.pairingOverrides || {};
+
+      renderSelects();
+      rerenderAll();
+
+      isApplyingRemoteState = false;
+    }
+
+    async function loadState() {
+      if (!window.supabase) {
         initializeMembers();
+        return;
       }
 
-      if (savedHistory) {
-        meetingHistory = JSON.parse(savedHistory);
+      const { data, error } = await window.supabase
+        .from('app_state')
+        .select('state')
+        .eq('id', 1)
+        .single();
+
+      if (error || !data || !data.state) {
+        console.error('Failed to load app state:', error);
+        initializeMembers();
+        await saveState();
+        return;
       }
 
-      if (savedWeek) {
-        currentWeek = Number(savedWeek) || 1;
+      const state = data.state;
+
+      members = Array.isArray(state.members)
+        ? state.members.map(member => ({
+            ...member,
+            lastMeetingWeek: member.lastMeetingWeek || 0
+          }))
+        : [];
+
+      meetingHistory = Array.isArray(state.meetingHistory) ? state.meetingHistory : [];
+      currentWeek = Number(state.currentWeek) || 1;
+      currentPage = state.currentPage || 'homePage';
+      pairingOverrides = state.pairingOverrides || {};
+
+      if (!members.length) {
+        initializeMembers();
+        await saveState();
+      }
+    }
+
+    function subscribeToRealtime() {
+      if (!window.supabase) return;
+
+      if (realtimeChannel) {
+        window.supabase.removeChannel(realtimeChannel);
       }
 
-      if (savedPage) {
-        currentPage = savedPage;
-      }
-
-      if (savedPairingOverrides) {
-        pairingOverrides = JSON.parse(savedPairingOverrides);
-      }
+      realtimeChannel = window.supabase
+        .channel('coffee-yap-app-state')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'app_state',
+            filter: 'id=eq.1'
+          },
+          (payload) => {
+            const newState = payload.new?.state;
+            if (!newState) return;
+            applyRemoteState(newState);
+          }
+        )
+        .subscribe((status) => {
+          console.log('Realtime status:', status);
+        });
     }
 
     function findMemberById(id) {
@@ -2354,7 +2434,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       return referenceWeek - member.lastMeetingWeek;
     }
 
-    function advanceWeek() {
+    async function advanceWeek() {
       if (!adminVisible) {
         setMessage('Only admin can move weeks forward.', 'error');
         return;
@@ -2391,11 +2471,11 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       `, 'week'));
 
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage(`Moved to Week ${currentWeek}. New pairings generated and stronger inactivity decay applied.`, 'success');
     }
 
-    function goBackWeek() {
+    async function goBackWeek() {
       if (!adminVisible) {
         setMessage('Only admin can move weeks backward.', 'error');
         return;
@@ -2414,7 +2494,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       `, 'week'));
 
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage(`Moved back to Week ${currentWeek}. Pairings refreshed for that week.`, 'success');
     }
 
@@ -2463,7 +2543,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       const updatedReliabilityB = getReliability(memberB);
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const photoSrc = e.target.result;
         const photoHTML = `<img src="${photoSrc}" class="history-photo" alt="Meeting photo" />`;
 
@@ -2483,7 +2563,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
         }));
 
         rerenderAll();
-        saveState();
+        await saveState();
         resetUploadUI();
         setMessage(`Great connection! ${memberA.name} and ${memberB.name}'s meeting has been recorded for Week ${currentWeek}.`, 'success');
         submitBtn.disabled = false;
@@ -2497,7 +2577,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       reader.readAsDataURL(currentFile);
     }
 
-    function resetDemo() {
+    async function resetDemo() {
       const confirmed = confirm('Reset all Coffee Yap data? This cannot be undone.');
       if (!confirmed) return;
 
@@ -2513,11 +2593,11 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       initializeMembers();
       renderSelects();
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage('Coffee Yap data reset. Ready to start tracking connections again.', 'success');
     }
 
-    function removeHistoryEntry(entryId) {
+    async function removeHistoryEntry(entryId) {
       if (!adminVisible) {
         setMessage('Admin mode required to remove meetings.', 'error');
         return;
@@ -2528,7 +2608,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
 
       meetingHistory = meetingHistory.filter(entry => entry.id !== entryId);
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage('History entry removed.', 'success');
     }
 
@@ -2554,10 +2634,10 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       setMessage('Admin mode hidden.', 'success');
     }
 
-    function switchPage(pageId) {
+    async function switchPage(pageId) {
       currentPage = pageId;
       updatePageVisibility();
-      saveState();
+      await saveState();
     }
 
     function updatePageVisibility() {
@@ -2614,7 +2694,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       setMessage(`Admin controls set to current week: Week ${currentWeek}.`, 'success');
     }
 
-    function adminLoadWeek() {
+    async function adminLoadWeek() {
       if (!adminVisible) {
         setMessage('Admin mode required.', 'error');
         return;
@@ -2625,7 +2705,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
 
       currentWeek = week;
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage(`Loaded Week ${week}.`, 'success');
     }
 
@@ -2678,7 +2758,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       setMessage(`No saved override exists for Week ${week}. Loaded default pairings instead.`, 'success');
     }
 
-    function adminSaveManualPairings() {
+    async function adminSaveManualPairings() {
       if (!adminVisible) {
         setMessage('Admin mode required.', 'error');
         return;
@@ -2737,11 +2817,11 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       pairingOverrides[getWeekOverrideKey(week)] = serializePairings(parsedGroups);
       currentWeek = week;
       rerenderAll();
-      saveState();
+      await saveState();
       setMessage(`Saved manual pairings for Week ${week}.`, 'success');
     }
 
-    function adminClearWeekOverride() {
+    async function adminClearWeekOverride() {
       if (!adminVisible) {
         setMessage('Admin mode required.', 'error');
         return;
@@ -2762,7 +2842,7 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
       } else {
         renderAdminControls();
       }
-      saveState();
+      await saveState();
       setMessage(`Cleared the manual pairing override for Week ${week}.`, 'success');
     }
 
@@ -2860,11 +2940,14 @@ Sophie Lu, Rohan Tirumala, Rohan Tawade"
     document.getElementById('exitAdminBtn').addEventListener('click', exitAdminMode);
     document.getElementById('resetTopBtn').addEventListener('click', resetDemo);
 
-    loadState();
-    renderSelects();
-    rerenderAll();
-
     window.copyToClipboard = copyToClipboard;
+
+    (async function initApp() {
+      await loadState();
+      renderSelects();
+      rerenderAll();
+      subscribeToRealtime();
+    })();
   </script>
 </body>
 </html>
